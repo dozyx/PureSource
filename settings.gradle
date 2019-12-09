@@ -1,2 +1,2 @@
-include ':app', ':recyclerview'
+include ':app', ':recyclerview', ':paging-common', ':paging-runtime'
 rootProject.name='PureSource'
