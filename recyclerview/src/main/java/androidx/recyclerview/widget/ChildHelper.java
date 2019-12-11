@@ -244,6 +244,8 @@ class ChildHelper {
     }
 
     /**
+     * 返回所有显示的 child 的数量
+     *
      * Returns the number of children that are not hidden.
      *
      * @return Number of children that are not hidden.

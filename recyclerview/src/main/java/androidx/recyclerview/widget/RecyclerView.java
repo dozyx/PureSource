@@ -421,6 +421,9 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     boolean mIsAttached;
     boolean mHasFixedSize;
     boolean mEnableFastScroller;
+    /**
+     * 是否完成过 layout
+     */
     @VisibleForTesting boolean mFirstLayoutComplete;
 
     /**
@@ -449,6 +452,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     private List<OnChildAttachStateChangeListener> mOnChildAttachStateListeners;
 
     /**
+     * 当整个数据集发生改变时为 true
      * True after an event occurs that signals that the entire data set has changed. In that case,
      * we cannot run any animations since we don't know what happened until layout.
      *
@@ -1043,6 +1047,8 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 如果提前知道 RecyclerView 的尺寸不受 adapter 数据的影响的话，RecyclerView 会进行一些优化。
+     *
      * RecyclerView can perform several optimizations if it can know in advance that RecyclerView's
      * size is not affected by the adapter contents. RecyclerView can still change its size based
      * on other factors (e.g. its parent's size) but this size calculation cannot depend on the
@@ -2892,6 +2898,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 在触摸事件分发给 child 或者本身的滚动行为之前，对事件进行拦截
      * Add an {@link OnItemTouchListener} to intercept touch events before they are dispatched
      * to child views or this view's standard scrolling behavior.
      *
@@ -2976,6 +2983,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
             return false;
         }
         if (dispatchOnItemTouchIntercept(e)) {
+            // 事件被外部的 OnItemTouchListener 拦截掉，不再触发自身的滚动
             cancelTouch();
             return true;
         }
@@ -3038,6 +3046,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
 
                 final int x = (int) (e.getX(index) + 0.5f);
                 final int y = (int) (e.getY(index) + 0.5f);
+                // 判断是否需要滚动，如果需要滚动，将拦截事件，触发 onTouchEvent()
                 if (mScrollState != SCROLL_STATE_DRAGGING) {
                     final int dx = x - mInitialTouchX;
                     final int dy = y - mInitialTouchY;
@@ -3088,6 +3097,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
             return false;
         }
         if (dispatchOnItemTouch(e)) {
+            // 事件被 OnItemTouchListener 拦截
             cancelTouch();
             return true;
         }
@@ -3115,6 +3125,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
+                // 与 onInterceptTouchEvent() 处理部分一致，为什么要处理两次？
                 mScrollPointerId = e.getPointerId(0);
                 mInitialTouchX = mLastTouchX = (int) (e.getX() + 0.5f);
                 mInitialTouchY = mLastTouchY = (int) (e.getY() + 0.5f);
@@ -3303,15 +3314,23 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
+        // 测量自身尺寸大小
         if (mLayout == null) {
             defaultOnMeasure(widthSpec, heightSpec);
             return;
         }
+        // LinearLayoutManager 的自动测量返回 true
         if (mLayout.isAutoMeasureEnabled()) {
             final int widthMode = MeasureSpec.getMode(widthSpec);
             final int heightMode = MeasureSpec.getMode(heightSpec);
 
             /**
+             * 该调用应当废弃掉，然后用 {@link #defaultOnMeasure(int, int)} 替换。但它仍保留在这是因为替换
+             * 掉会影响到第三方的代码。
+             * 因为当使用自动测量时，文档指引开发者不要重写 {@link LayoutManager#onMeasure(int, int)}，
+             * 所以这里不应该看做是调用了 {@link LayoutManager#onMeasure(int, int)}，而只是调用了 RecyclerView
+             * 自己的实现
+             *
              * This specific call should be considered deprecated and replaced with
              * {@link #defaultOnMeasure(int, int)}. It can't actually be replaced as it could
              * break existing third party code but all documentation directs developers to not
@@ -3322,6 +3341,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
 
             final boolean measureSpecModeIsExactly =
                     widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY;
+            // 如果宽、高都是精确值，则不需要根据内容来计算
             if (measureSpecModeIsExactly || mAdapter == null) {
                 return;
             }
@@ -3350,6 +3370,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
                 mLayout.setMeasuredDimensionFromChildren(widthSpec, heightSpec);
             }
         } else {
+            // mHasFixedSize 默认 false
             if (mHasFixedSize) {
                 mLayout.onMeasure(mRecycler, mState, widthSpec, heightSpec);
                 return;
@@ -3393,6 +3414,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 缺乏更多信息的情况下，通过根据自身的一些信息来计算宽高
      * An implementation of {@link View#onMeasure(int, int)} to fall back to in various scenarios
      * where this RecyclerView is otherwise lacking better information.
      */
@@ -3801,6 +3823,9 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         return lastKnownId;
     }
 
+    /**
+     * 将还要滚动的距离的值存入 State 中
+     */
     final void fillRemainingScrollValues(State state) {
         if (getScrollState() == SCROLL_STATE_SETTLING) {
             final OverScroller scroller = mViewFlinger.mScroller;
@@ -3813,6 +3838,12 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * layout 步骤一：
+     * 处理 adapter 更新
+     * 决定运行的动画
+     * 保存当前 view 的信息
+     * 如果必要，进行预测的 layout 并保存信息
+     *
      * The first step of a layout where we;
      * - process adapter updates
      * - decide which animation should run
@@ -3820,6 +3851,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
      * - If necessary, run predictive layout and save its information
      */
     private void dispatchLayoutStep1() {
+        // 该方法只在 STEP_START 时调用
         mState.assertLayoutStep(State.STEP_START);
         fillRemainingScrollValues(mState);
         mState.mIsMeasuring = false;
@@ -5622,6 +5654,10 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 负责维护 RecyclerView 的缓存
+     * "scrapped" view 是指仍与 RecyclerView 关联，但已被标记为待移除或者待复用的 view。scrapped 是废弃的意思。
+     * 关键：如果被复用的 view 被认为是 "dirty" 的话，adapter 会进行 rebind，如果不是，那么这个 view 会直接被复用。
+     *
      * A Recycler is responsible for managing scrapped or detached item views for reuse.
      *
      * <p>A "scrapped" view is a view that is still attached to its parent RecyclerView but
@@ -5638,6 +5674,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         final ArrayList<ViewHolder> mAttachedScrap = new ArrayList<>();
         ArrayList<ViewHolder> mChangedScrap = null;
 
+        // mCachedViews 默认缓存两个
         final ArrayList<ViewHolder> mCachedViews = new ArrayList<ViewHolder>();
 
         private final List<ViewHolder>
@@ -7611,6 +7648,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
             final int size = View.MeasureSpec.getSize(spec);
             switch (mode) {
                 case View.MeasureSpec.EXACTLY:
+                    // 直接返回指定大小
                     return size;
                 case View.MeasureSpec.AT_MOST:
                     return Math.min(size, Math.max(desired, min));
@@ -7653,6 +7691,12 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         }
 
         /**
+         * 是否使用自动测量机制。如果返回 false 将使用 LayoutManager 的 onMeasure 实现。
+         * 如果子类重写该方法返回 true，那么子类不应该再重写 LayoutManager#onMeasure 方法。
+         * 自动测量机制通过在 {@link RecyclerView#onMeasure(int, int)} 中调用 {@link LayoutManager#onLayoutChildren(Recycler, State)}
+         * 接着基于 children 的尺寸和位置计算出想要的尺寸，来处理 wrapping 的 children。
+         * 更具体的测量步骤可以查看该方法原文说明或者看 {@link RecyclerView#onMeasure(int, int)} 的源码，因为有点长不继续做翻译。
+         *
          * Returns whether the measuring pass of layout should use the AutoMeasure mechanism of
          * {@link RecyclerView} or if it should be done by the LayoutManager's implementation of
          * {@link LayoutManager#onMeasure(Recycler, State, int, int)}.
@@ -9968,6 +10012,8 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         }
 
         /**
+         * 测量关联的 RecyclerView
+         *
          * Measure the attached RecyclerView. Implementations must call
          * {@link #setMeasuredDimension(int, int)} before returning.
          * <p>
@@ -12094,6 +12140,8 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 包含当前 RecyclerView 状态的一些信息，如要滚动的位置或者聚焦的 view。State 对象还可以通过资源 id 保存任意数据。
+     *
      * <p>Contains useful information about the current RecyclerView state like target scroll
      * position or view focus. State object can also keep arbitrary data, identified by resource
      * ids.</p>
@@ -12108,6 +12156,9 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         static final int STEP_LAYOUT = 1 << 1;
         static final int STEP_ANIMATIONS = 1 << 2;
 
+        /**
+         * 断言 layout 步骤
+         */
         void assertLayoutStep(int accepted) {
             if ((accepted & mLayoutStep) == 0) {
                 throw new IllegalStateException("Layout state should be one of "
