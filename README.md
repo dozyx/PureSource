@@ -4,6 +4,10 @@
 
 * RecyclerView 1.0.0
 
+  * 参考：
+
+    [RecyclerView源码分析](https://www.jianshu.com/p/9ddfdffee5d3)
+
 ### 源码导入
 
 * 新建 module，删除不需要的文件（也可以将已有 module 拷贝删除源码，这样就可以避免删除新建 module 多余文件）
