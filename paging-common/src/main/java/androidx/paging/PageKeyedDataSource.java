@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
+ * 基于页码 key 的增量数据加载，请求返回时会携带下一页或上一页的 key。
+ *
  * Incremental data loader for page-keyed content, where requests return keys for next/previous
  * pages.
  * <p>
@@ -144,6 +146,11 @@ public abstract class PageKeyedDataSource<Key, Value> extends ContiguousDataSour
     }
 
     /**
+     * 用于返回初始的数据，还可以返回位置和数量信息。
+     * 每个回调只能调用一次。
+     * 如果可以计算出已加载数据前或后的数量，则调用带 5 个参数的 onResult 方法。
+     * 如果不容易计算这些信息或者 placeholdersEnabled 为  false（位置信息会被忽略），则调用三个参数的方法。
+     *
      * Callback for {@link #loadInitial(LoadInitialParams, LoadInitialCallback)}
      * to return data and, optionally, position/count information.
      * <p>
@@ -372,6 +379,8 @@ public abstract class PageKeyedDataSource<Key, Value> extends ContiguousDataSour
     }
 
     /**
+     * 加载初始化数据。
+     *
      * Load initial data.
      * <p>
      * This method is called first to initialize a PagedList with data. If it's possible to count
@@ -390,6 +399,8 @@ public abstract class PageKeyedDataSource<Key, Value> extends ContiguousDataSour
             @NonNull LoadInitialCallback<Key, Value> callback);
 
     /**
+     * 根据 key 请求上一页的数据。数据会被添加到已有数据前面。
+     *
      * Prepend page with the key specified by {@link LoadParams#key LoadParams.key}.
      * <p>
      * It's valid to return a different list size than the page size if it's easier, e.g. if your
@@ -410,6 +421,8 @@ public abstract class PageKeyedDataSource<Key, Value> extends ContiguousDataSour
             @NonNull LoadCallback<Key, Value> callback);
 
     /**
+     * 请求下一页数据。
+     *
      * Append page with the key specified by {@link LoadParams#key LoadParams.key}.
      * <p>
      * It's valid to return a different list size than the page size if it's easier, e.g. if your

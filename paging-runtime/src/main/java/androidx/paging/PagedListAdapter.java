@@ -121,6 +121,8 @@ public abstract class PagedListAdapter<T, VH extends RecyclerView.ViewHolder>
     };
 
     /**
+     * diffCallback 在替换 PagedList 时，用来与旧的 PagedList 比对。
+     *
      * Creates a PagedListAdapter with default threading and
      * {@link androidx.recyclerview.widget.ListUpdateCallback}.
      *
@@ -141,6 +143,9 @@ public abstract class PagedListAdapter<T, VH extends RecyclerView.ViewHolder>
     }
 
     /**
+     * 设置要显示的新的列表。
+     * 如果之前已有显示的列表，则会使用 DiffUtil 进行比对。
+     *
      * Set the new list to be displayed.
      * <p>
      * If a list is already being displayed, a diff will be computed on a background thread, which
