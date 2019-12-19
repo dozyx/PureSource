@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
+ * 展示 PagedList 中分页数据的 Adapter 基类。
+ *
  * {@link RecyclerView.Adapter RecyclerView.Adapter} base class for presenting paged data from
  * {@link PagedList}s in a {@link RecyclerView}.
  * <p>

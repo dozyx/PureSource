@@ -31,6 +31,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 
 /**
+ * 用于将 PagedList 数据映射到 Adapter 中。
+ *
  * Helper object for mapping a {@link PagedList} into a
  * {@link androidx.recyclerview.widget.RecyclerView.Adapter RecyclerView.Adapter}.
  * <p>
@@ -118,6 +120,9 @@ import java.util.concurrent.Executor;
 public class AsyncPagedListDiffer<T> {
     // updateCallback notifications must only be notified *after* new data and item count are stored
     // this ensures Adapter#notifyItemRangeInserted etc are accessing the new data
+    /**
+     * 通知 Adapter 数据变化
+     */
     @SuppressWarnings("WeakerAccess") /* synthetic access */
     final ListUpdateCallback mUpdateCallback;
     @SuppressWarnings("WeakerAccess") /* synthetic access */

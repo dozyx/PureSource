@@ -276,6 +276,9 @@ public abstract class DataSource<Key, Value> {
 
         // mSignalLock protects mPostExecutor, and mHasSignalled
         private final Object mSignalLock = new Object();
+        /**
+         * 向主线程发送结果
+         */
         private Executor mPostExecutor = null;
         private boolean mHasSignalled = false;
 
@@ -383,6 +386,8 @@ public abstract class DataSource<Key, Value> {
     }
 
     /**
+     * 向数据源发送停止加载信号，并给 callback 发送通知
+     *
      * Signal the data source to stop loading, and notify its callback.
      * <p>
      * If invalidate has already been called, this method does nothing.
