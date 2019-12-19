@@ -853,6 +853,8 @@ public abstract class PagedList<T> extends AbstractList<T> {
         public final int pageSize;
 
         /**
+         * 间隔多少需要提前拉取。默认会与 pageSize 一致。
+         *
          * Prefetch distance which defines how far ahead to load.
          * <p>
          * If this value is set to 50, the paged list will attempt to load 50 items in advance of
@@ -864,6 +866,8 @@ public abstract class PagedList<T> extends AbstractList<T> {
         public final int prefetchDistance;
 
         /**
+         * PagedList 是否显示 null 的 placeholder（如果 DataSource 提供的话）。
+         *
          * Defines whether the PagedList may display null placeholders, if the DataSource provides
          * them.
          */

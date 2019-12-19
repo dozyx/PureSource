@@ -249,6 +249,8 @@ public abstract class DataSource<Key, Value> {
             @NonNull Function<Value, ToValue> function);
 
     /**
+     * 返回 true 表示该数据源只产生连续的数据集合，两个集合之间不会产生间隔。
+     *
      * Returns true if the data source guaranteed to produce a contiguous set of items,
      * never producing gaps.
      */

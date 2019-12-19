@@ -242,11 +242,20 @@ class ContiguousPagedList<K, V> extends PagedList<V> implements PagedStorage.Cal
         return index + prefetchDistance + 1 - itemsBeforeTrailingNulls;
     }
 
+    /**
+     * @param index 当前获取的 item 的位置。根据这个位置来判断是否需要加载前一页或者后一页
+     */
     @MainThread
     @Override
     protected void loadAroundInternal(int index) {
+        // 假如 index 为 0，prefetchDistance 为 10。getPrependItemsRequested 计算结果为 10
+        // 表示 index 前面需要增加 10 个 item。所以需要拉取上一页。
+        // prependItems 表示是 index 往前一页需要有多少个 item。
+        // index 表示的就是 index 及之前 item 的数量，prefetchDistance - index > 0 表示前一页数据不完整，需要拉取。
+        // index < prefetchDistance
         int prependItems = getPrependItemsRequested(mConfig.prefetchDistance, index,
                 mStorage.getLeadingNullCount());
+        // 需要拉取下一页条件：当前总数量 < index + 1 + prefetchDistance
         int appendItems = getAppendItemsRequested(mConfig.prefetchDistance, index,
                 mStorage.getLeadingNullCount() + mStorage.getStorageCount());
 
