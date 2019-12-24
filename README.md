@@ -3,6 +3,9 @@
 ### 已导入源码
 
 * RecyclerView 1.0.0
+* RxJava 2.2.16
+* OkHttp 3.14.4
+* Retrofit 2.7.0
 
   * 参考：
 
