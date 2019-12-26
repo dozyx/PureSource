@@ -7,6 +7,7 @@
 * RxJava 2.2.16
 * OkHttp 3.14.4
 * Retrofit 2.7.0
+* LeakCanary 1.6.3
 
 
 ### 源码导入
