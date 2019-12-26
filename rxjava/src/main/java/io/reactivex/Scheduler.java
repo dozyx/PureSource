@@ -358,6 +358,8 @@ public abstract class Scheduler {
      */
     public abstract static class Worker implements Disposable {
         /**
+         * 安排一个任务，无延迟
+         *
          * Schedules a Runnable for execution without any time delay.
          *
          * <p>The default implementation delegates to {@link #schedule(Runnable, long, TimeUnit)}.

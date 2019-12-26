@@ -929,6 +929,8 @@ public final class RxJavaPlugins {
     }
 
     /**
+     * hook 函数
+     *
      * Calls the associated hook function.
      * @param <T> the value type
      * @param source the hook's input value

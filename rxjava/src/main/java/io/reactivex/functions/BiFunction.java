@@ -16,6 +16,8 @@ package io.reactivex.functions;
 import io.reactivex.annotations.NonNull;
 
 /**
+ * 接收多个输入值的函数接口
+ *
  * A functional interface (callback) that computes a value based on multiple input values.
  * @param <T1> the first value type
  * @param <T2> the second value type

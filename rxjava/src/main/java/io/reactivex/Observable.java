@@ -35,6 +35,15 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.*;
 
 /**
+ * RxJava 理解：Observable、Observer、subscribe
+ * Observer 订阅 Observable 之后，Observable 开始产生数据。当链式调用时，整个链的角色为：开头为 observable，中间的角色既是
+ * observable 也是 observer，最后是一个 observer。
+ *
+ * 比如：source1 -> source2 -> observer
+ * subscribe() 发生订阅之后，触发 source2 的 subscribeActual()，source2 内部会实现自己的 observer，在 subscribeActual()
+ * 种使用这个内部 observer 订阅 source1，触发 source1 的 subscribeActual()，source1 为第一个 observable，它开始产生数据，并将数据
+ * 发送到订阅它的 observer，即 source2 内部的 observer，source2 知道有数据过来之后经过处理再发送给订阅 source2 的 observer。
+ *
  * The Observable class is the non-backpressured, optionally multi-valued base reactive class that
  * offers factory methods, intermediate operators and the ability to consume synchronous
  * and/or asynchronous reactive dataflows.
@@ -12297,6 +12306,8 @@ public abstract class Observable<T> implements ObservableSource<T> {
     }
 
     /**
+     * 发生订阅时实际调用的方法。Observable 的具体类都要实现这个方法，来只要必要的业务逻辑以及处理到来的 Observer。
+     *
      * Operator implementations (both source and intermediate) should implement this method that
      * performs the necessary business logic and handles the incoming {@link Observer}s.
      * <p>There is no need to call any of the plugin hooks on the current {@code Observable} instance or

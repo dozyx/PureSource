@@ -27,6 +27,8 @@ import io.reactivex.internal.functions.ObjectHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 
 /**
+ * 在当前线程执行，但不是立即执行。
+ *
  * Schedules work on the current thread but does not execute immediately. Work is put in a queue and executed
  * after the current unit of work is completed.
  */

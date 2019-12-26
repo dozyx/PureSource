@@ -16,6 +16,8 @@ package io.reactivex.internal.fuseable;
 import io.reactivex.annotations.*;
 
 /**
+ * 一个简单的队列接口
+ *
  * A minimalist queue interface without the method bloat of java.util.Collection and java.util.Queue.
  *
  * @param <T> the value type to offer and poll, not null

@@ -3,13 +3,11 @@
 ### 已导入源码
 
 * RecyclerView 1.0.0
+  * [RecyclerView源码分析](https://www.jianshu.com/p/9ddfdffee5d3)
 * RxJava 2.2.16
 * OkHttp 3.14.4
 * Retrofit 2.7.0
 
-  * 参考：
-
-    [RecyclerView源码分析](https://www.jianshu.com/p/9ddfdffee5d3)
 
 ### 源码导入
 
@@ -20,3 +18,18 @@
 
 
 如果该库依赖了其他库，可以在 https://mvnrepository.com/ 上找到，然后添加到 build.gradle 文件中。
+
+### RxJava
+* [Operator fusion in RxJava 2](https://proandroiddev.com/operator-fusion-in-rxjava-2-dcd6612cffae)
+
+#### 术语
+* assembly - 组装。指的是构建流的过程。比如：
+    ```
+    @CheckReturnValue
+    @SchedulerSupport(SchedulerSupport.NONE)
+    public final <R> Observable<R> map(Function<? super T, ? extends R> mapper) {
+        ObjectHelper.requireNonNull(mapper, "mapper is null");
+        return RxJavaPlugins.onAssembly(new ObservableMap<T, R>(this, mapper));
+    }
+    ```
+    

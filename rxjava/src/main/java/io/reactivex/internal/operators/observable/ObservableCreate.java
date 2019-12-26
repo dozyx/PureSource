@@ -28,6 +28,7 @@ public final class ObservableCreate<T> extends Observable<T> {
     final ObservableOnSubscribe<T> source;
 
     public ObservableCreate(ObservableOnSubscribe<T> source) {
+        // source 用来产生数据
         this.source = source;
     }
 
@@ -37,6 +38,7 @@ public final class ObservableCreate<T> extends Observable<T> {
         observer.onSubscribe(parent);
 
         try {
+            // source 在 subscribe() 方法种调用传入的 emitter 发送数据
             source.subscribe(parent);
         } catch (Throwable ex) {
             Exceptions.throwIfFatal(ex);
