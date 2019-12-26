@@ -107,6 +107,8 @@ import io.reactivex.schedulers.*;
 public abstract class Observable<T> implements ObservableSource<T> {
 
     /**
+     * 在多个 source 中决出第一个发送 item 或终止通知的 source。
+     *
      * Mirrors the one ObservableSource in an Iterable of several ObservableSources that first either emits an item or sends
      * a termination notification.
      * <p>

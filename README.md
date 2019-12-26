@@ -20,7 +20,8 @@
 如果该库依赖了其他库，可以在 https://mvnrepository.com/ 上找到，然后添加到 build.gradle 文件中。
 
 ### RxJava
-* [Operator fusion in RxJava 2](https://proandroiddev.com/operator-fusion-in-rxjava-2-dcd6612cffae)
+* [Operator fusion in RxJava 2](https://proandroiddev.com/operator-fusion-in-rxjava-2-dcd6612cffae)    
+    RxJava 工作流程、优化和底层实现的一些概念。
 
 #### 术语
 * assembly - 组装。指的是构建流的过程。比如：
@@ -32,4 +33,5 @@
         return RxJavaPlugins.onAssembly(new ObservableMap<T, R>(this, mapper));
     }
     ```
+* fusion - 融合。使用某些转换来降低 RxJava 开销。
     

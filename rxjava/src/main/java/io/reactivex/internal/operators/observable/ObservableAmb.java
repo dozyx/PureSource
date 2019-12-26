@@ -26,6 +26,9 @@ public final class ObservableAmb<T> extends Observable<T> {
     final Iterable<? extends ObservableSource<? extends T>> sourcesIterable;
 
     public ObservableAmb(ObservableSource<? extends T>[] sources, Iterable<? extends ObservableSource<? extends T>> sourcesIterable) {
+        // 支持两种集合类型：数组或 Iterable
+        // sources 不为 null 就会使用 sources
+        // sources 为 null，会将 Iterable 的元素导入 sources
         this.sources = sources;
         this.sourcesIterable = sourcesIterable;
     }
@@ -44,6 +47,8 @@ public final class ObservableAmb<T> extends Observable<T> {
                         return;
                     }
                     if (count == sources.length) {
+                        // 增加数组大小
+                        // 规则：每次增加的大小为现在大小的四分之一，初始为 8，第一次增加之后为 10，第二次为 12
                         ObservableSource<? extends T>[] b = new ObservableSource[count + (count >> 2)];
                         System.arraycopy(sources, 0, b, 0, count);
                         sources = b;
@@ -59,6 +64,7 @@ public final class ObservableAmb<T> extends Observable<T> {
             count = sources.length;
         }
 
+        // 0 和 1 时优化使用更简单的实现。这是 fusion 的一种
         if (count == 0) {
             EmptyDisposable.complete(observer);
             return;
@@ -72,6 +78,9 @@ public final class ObservableAmb<T> extends Observable<T> {
         ac.subscribe(sources);
     }
 
+    /**
+     * coordinator 协调者
+     */
     static final class AmbCoordinator<T> implements Disposable {
         final Observer<? super T> downstream;
         final AmbInnerObserver<T>[] observers;
@@ -97,11 +106,15 @@ public final class ObservableAmb<T> extends Observable<T> {
                 if (winner.get() != 0) {
                     return;
                 }
-
+                // 订阅所有的 source
                 sources[i].subscribe(as[i]);
             }
         }
 
+        /**
+         * 在 observer 回调中调用该函数，决出哪个 source 胜出，将取消其他 observable。
+         * 一旦决出胜负之后，只会处理该 source 的事件。
+         */
         public boolean win(int index) {
             int w = winner.get();
             if (w == 0) {
@@ -159,6 +172,7 @@ public final class ObservableAmb<T> extends Observable<T> {
 
         @Override
         public void onNext(T t) {
+            // 发送胜出者的 item，失败者 dispose
             if (won) {
                 downstream.onNext(t);
             } else {
