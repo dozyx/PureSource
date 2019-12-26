@@ -14,6 +14,8 @@
 package io.reactivex.functions;
 
 /**
+ * 接收单个值的函数接口
+ *
  * A functional interface (callback) that accepts a single value.
  * @param <T> the value type
  */

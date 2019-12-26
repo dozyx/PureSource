@@ -13,6 +13,8 @@
 package io.reactivex.disposables;
 
 /**
+ * 表示一个可取消的资源
+ *
  * Represents a disposable resource.
  */
 public interface Disposable {

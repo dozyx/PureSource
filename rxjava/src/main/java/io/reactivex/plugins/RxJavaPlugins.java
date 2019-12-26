@@ -337,6 +337,8 @@ public final class RxJavaPlugins {
     }
 
     /**
+     * undeliverable 错误发生时被调用
+     *
      * Called when an undeliverable error occurs.
      * <p>
      * Undeliverable errors are those {@code Observer.onError()} invocations that are not allowed to happen on
@@ -1041,6 +1043,7 @@ public final class RxJavaPlugins {
     }
 
     /**
+     * 调用 hook 函数。钩子函数可以对 source observable 转为另一个 observable，或直接返回原 observable。
      * Calls the associated hook function.
      * @param <T> the value type
      * @param source the hook's input value
@@ -1254,6 +1257,8 @@ public final class RxJavaPlugins {
     }
 
     /**
+     * 对异常进行 try catch 并封装成统一的 RuntimeException
+     *
      * Wraps the call to the function in try-catch and propagates thrown
      * checked exceptions as RuntimeException.
      * @param <T> the input type

@@ -24,6 +24,11 @@ import io.reactivex.internal.functions.Functions;
 import io.reactivex.observers.LambdaConsumerIntrospection;
 import io.reactivex.plugins.RxJavaPlugins;
 
+/**
+ * AtomicReference 使用继承而不是组合方式看着好怪。继承表示的是 is a 的关系，那么可以说
+ * LambdaObserver 是一个 AtomicReference，但在对外使用的地方，除了 DisposableHelper 外，没有看到作为 AtomicReference。
+ * 如果使用组合方式的话，
+ */
 public final class LambdaObserver<T> extends AtomicReference<Disposable>
         implements Observer<T>, Disposable, LambdaConsumerIntrospection {
 

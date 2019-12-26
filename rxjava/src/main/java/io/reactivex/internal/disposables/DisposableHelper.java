@@ -77,6 +77,7 @@ public enum DisposableHelper implements Disposable {
     public static boolean setOnce(AtomicReference<Disposable> field, Disposable d) {
         ObjectHelper.requireNonNull(d, "d is null");
         if (!field.compareAndSet(null, d)) {
+            // field 非 null
             d.dispose();
             if (field.get() != DISPOSED) {
                 reportDisposableSet();
