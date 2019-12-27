@@ -14,6 +14,7 @@ package io.reactivex.disposables;
 
 /**
  * 表示一个可取消的资源
+ * idempotent 幂等，指的是多次执行跟一次执行的影响相同。
  *
  * Represents a disposable resource.
  */

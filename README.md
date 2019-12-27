@@ -22,6 +22,7 @@
 ### RxJava
 * [Operator fusion in RxJava 2](https://proandroiddev.com/operator-fusion-in-rxjava-2-dcd6612cffae)    
     RxJava 工作流程、优化和底层实现的一些概念。
+* [RxJava 是如何实现线程切换的](https://juejin.im/post/5a6751af6fb9a01cb2571794)
 
 #### 术语
 * assembly - 组装。指的是构建流的过程。比如：

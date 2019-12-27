@@ -16,6 +16,8 @@ package io.reactivex.functions;
 import io.reactivex.annotations.NonNull;
 
 /**
+ * 接收一个值，并返回一个值，允许接收与返回值的类型不一样
+ *
  * A functional interface that takes a value and returns another value, possibly with a
  * different type and allows throwing a checked exception.
  *

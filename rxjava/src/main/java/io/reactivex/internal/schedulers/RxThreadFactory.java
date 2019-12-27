@@ -17,6 +17,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * 可以统计创建的线程数量，并且在名称里增加一个前缀。线程名称 prefix-count
+ *
  * A ThreadFactory that counts how many threads have been created and given a prefix,
  * sets the created Thread's name to {@code prefix-count}.
  */

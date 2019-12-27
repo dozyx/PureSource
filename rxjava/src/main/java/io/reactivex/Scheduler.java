@@ -393,6 +393,8 @@ public abstract class Scheduler {
         public abstract Disposable schedule(@NonNull Runnable run, long delay, @NonNull TimeUnit unit);
 
         /**
+         * 周期执行指定的 task
+         *
          * Schedules a periodic execution of the given task with the given initial time delay and repeat period.
          * <p>
          * The default implementation schedules and reschedules the {@code Runnable} task via the
@@ -566,7 +568,7 @@ public abstract class Scheduler {
         final Worker w;
 
         @Nullable
-        Thread runner;
+        Thread runner;// 执行 task 的线程
 
         DisposeTask(@NonNull Runnable decoratedRun, @NonNull Worker w) {
             this.decoratedRun = decoratedRun;

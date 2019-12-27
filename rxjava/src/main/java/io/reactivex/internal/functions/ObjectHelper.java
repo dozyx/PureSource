@@ -26,6 +26,8 @@ public final class ObjectHelper {
     }
 
     /**
+     * 校验一个对象是否为 null，为 null 将抛出异常
+     *
      * Verifies if the object is not null and returns it or throws a NullPointerException
      * with the given message.
      * @param <T> the value type

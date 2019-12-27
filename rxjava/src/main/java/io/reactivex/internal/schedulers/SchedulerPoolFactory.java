@@ -137,6 +137,7 @@ public final class SchedulerPoolFactory {
     }
 
     /**
+     * 核心线程为1，maximumPoolSize 为 Integer.MAX_VALUE
      * Creates a ScheduledExecutorService with the given factory.
      * @param factory the thread factory
      * @return the ScheduledExecutorService

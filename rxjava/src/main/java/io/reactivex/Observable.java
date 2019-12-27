@@ -9980,6 +9980,8 @@ public abstract class Observable<T> implements ObservableSource<T> {
     }
 
     /**
+     * 为 source 发送和通知指定 Scheduler。
+     *
      * Modifies an ObservableSource to perform its emissions and notifications on a specified {@link Scheduler},
      * asynchronously with an unbounded buffer of configurable "island size" and optionally delays onError notifications.
      * <p>
@@ -12351,6 +12353,11 @@ public abstract class Observable<T> implements ObservableSource<T> {
     }
 
     /**
+     * 影响 upstream
+     * 如果链中只有一个 subscribeOn，并且假设其他操作符没有改变线程，那么 subscribeOn 前的所有 source 的 subscribe 都会
+     * 使用 subscribeOn 指定的 Scheduler。
+     * 如果连续调用多次 subscribeOn，只有第一个会影响前面的 upstream，第二个 subscribeOn 影响的是前一个 subscribeOn。
+     *
      * Asynchronously subscribes Observers to this ObservableSource on the specified {@link Scheduler}.
      * <p>
      * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/subscribeOn.png" alt="">

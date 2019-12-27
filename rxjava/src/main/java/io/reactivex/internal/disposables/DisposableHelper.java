@@ -131,6 +131,8 @@ public enum DisposableHelper implements Disposable {
     }
 
     /**
+     * 验证 current 为 null，next 非 null。
+     *
      * Verifies that current is null, next is not null, otherwise signals errors
      * to the RxJavaPlugins and returns false.
      * @param current the current Disposable, expected to be null

@@ -169,6 +169,7 @@ public final class ObservableObserveOn<T> extends AbstractObservableWithUpstream
             final SimpleQueue<T> q = queue;
             final Observer<? super T> a = downstream;
 
+            // 死循环处理数据和通知
             for (;;) {
                 if (checkTerminated(done, q.isEmpty(), a)) {
                     return;

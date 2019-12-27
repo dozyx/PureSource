@@ -88,6 +88,7 @@ public final class ObservableSubscribeOn<T> extends AbstractObservableWithUpstre
         private final SubscribeOnObserver<T> parent;
 
         SubscribeTask(SubscribeOnObserver<T> parent) {
+            // 将上游的订阅放到 task 中执行
             this.parent = parent;
         }
 
