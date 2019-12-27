@@ -1,2 +1,2 @@
-include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava', ':okhttp', ':retrofit'
+include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava', ':okhttp', ':retrofit', ':leakcanary'
 rootProject.name='PureSource'
