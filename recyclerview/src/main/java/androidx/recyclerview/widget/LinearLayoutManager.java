@@ -472,9 +472,9 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         // layout algorithm:
         // 1) by checking children and other variables, find an anchor coordinate and an anchor
-        //  item position.
-        // 2) fill towards start, stacking from bottom
-        // 3) fill towards end, stacking from top
+        //  item position. 检查 children 和其他变量，找到一个锚点坐标和一个锚点 item 位置
+        // 2) fill towards start, stacking from bottom 向开头填充，从底部开始堆积
+        // 3) fill towards end, stacking from top 向末尾填充，从顶部开始堆积
         // 4) scroll to fulfill requirements like stack from bottom.
         // create layout state
         if (DEBUG) {
@@ -2141,6 +2141,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
         static final int SCROLLING_OFFSET_NaN = Integer.MIN_VALUE;
 
         /**
+         * 是否复用 children
          * We may not want to recycle children in some cases (e.g. layout)
          */
         boolean mRecycle = true;

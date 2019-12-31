@@ -2112,6 +2112,9 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 在可能导致 child view 触发 {@link RecyclerView#requestLayout()} 的代码之前调用，以避免重复调用
+     * 需要在代码之后成对调用 {@link #stopInterceptRequestLayout(boolean)}
+     *
      * This method should be called before any code that may trigger a child view to cause a call to
      * {@link RecyclerView#requestLayout()}.  Doing so enables {@link RecyclerView} to avoid
      * reacting to additional redundant calls to {@link #requestLayout()}.
@@ -3343,6 +3346,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
                     widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY;
             // 如果宽、高都是精确值，则不需要根据内容来计算
             if (measureSpecModeIsExactly || mAdapter == null) {
+                // 通常我们使用固定宽高或 match_parent 时会进入
                 return;
             }
 
@@ -3838,6 +3842,8 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 保存一些信息，然后进入 STEP_LAYOUT 状态
+     *
      * layout 步骤一：
      * 处理 adapter 更新
      * 决定运行的动画
@@ -3940,6 +3946,8 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
     }
 
     /**
+     * 实际对进行 layout 的地方。这一步可能执行多次
+     *
      * The second layout step where we do the actual layout of the views for the final state.
      * This step might be run multiple times if necessary (e.g. measure).
      */
@@ -3953,6 +3961,7 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
 
         // Step 2: Run layout
         mState.mInPreLayout = false;
+        // 使用 LayoutManager 进行 layout
         mLayout.onLayoutChildren(mRecycler, mState);
 
         mState.mStructureChanged = false;
