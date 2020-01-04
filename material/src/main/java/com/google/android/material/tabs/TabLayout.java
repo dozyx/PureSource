@@ -3079,6 +3079,7 @@ public class TabLayout extends HorizontalScrollView {
         indicatorHeight = tabSelectedIndicator.getIntrinsicHeight();
       }
       if (selectedIndicatorHeight >= 0) {
+        // 使用属性指定了高度
         indicatorHeight = selectedIndicatorHeight;
       }
 
@@ -3112,8 +3113,14 @@ public class TabLayout extends HorizontalScrollView {
         selectedIndicator =
             DrawableCompat.wrap(
                 tabSelectedIndicator != null ? tabSelectedIndicator : defaultSelectionIndicator);
+        // 配置 selectedIndicator 将要被绘制在哪个区域
+        // 注意：indicatorLeft 和 indicatorRight 并不是根据 selectedIndicator 计算出来的
+        // 所以如果想要自定义 indicator 的宽度的话，没办法直接使用 selectedIndicator 的宽度。不过可以利用 layer-list 设置一个居中的 item
         selectedIndicator.setBounds(indicatorLeft, indicatorTop, indicatorRight, indicatorBottom);
+
         if (selectedIndicatorPaint != null) {
+          // selectedIndicatorPaint 设置的颜色是 TabLayout_tabIndicatorColor 属性指定的颜色
+          // 注意：下面的处理导致 TabLayout_tabIndicatorColor 的颜色会覆盖 tabSelectedIndicator 图片本身的颜色
           if (VERSION.SDK_INT == VERSION_CODES.LOLLIPOP) {
             // Drawable doesn't implement setTint in API 21
             selectedIndicator.setColorFilter(
