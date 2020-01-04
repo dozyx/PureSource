@@ -1450,12 +1450,18 @@ public class TabLayout extends HorizontalScrollView {
     populateFromPagerAdapter();
   }
 
+
+  /**
+   * 根据 adapter 进行填充
+   */
   void populateFromPagerAdapter() {
+    //移除已有的 tab
     removeAllTabs();
 
     if (pagerAdapter != null) {
       final int adapterCount = pagerAdapter.getCount();
       for (int i = 0; i < adapterCount; i++) {
+        // 添加 tab，这个 tab 默认只设置了 text
         addTab(newTab().setText(pagerAdapter.getPageTitle(i)), false);
       }
 
