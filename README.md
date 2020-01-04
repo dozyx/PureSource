@@ -8,6 +8,7 @@
 * OkHttp 3.14.4
 * Retrofit 2.7.0
 * LeakCanary 1.6.3
+* Material 1.1.0-beta02
 
 
 ### 源码导入
