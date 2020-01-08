@@ -57,11 +57,15 @@ public interface CallAdapter<R, T> {
   T adapt(Call<R> call);
 
   /**
+   * 基于返回类型为请求方法创建 CallAdapter
+   *
    * Creates {@link CallAdapter} instances based on the return type of {@linkplain
    * Retrofit#create(Class) the service interface} methods.
    */
   abstract class Factory {
     /**
+     * 如果无法处理该返回类型，则返回 null
+     *
      * Returns a call adapter for interface methods that return {@code returnType}, or null if it
      * cannot be handled by this factory.
      */

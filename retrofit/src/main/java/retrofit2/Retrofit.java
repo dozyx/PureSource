@@ -65,7 +65,7 @@ import static java.util.Collections.unmodifiableList;
 public final class Retrofit {
   private final Map<Method, ServiceMethod<?>> serviceMethodCache = new ConcurrentHashMap<>();
 
-  final okhttp3.Call.Factory callFactory;
+  final okhttp3.Call.Factory callFactory; // 通常为 OkHttpClient
   final HttpUrl baseUrl;
   final List<Converter.Factory> converterFactories;
   final List<CallAdapter.Factory> callAdapterFactories;
@@ -131,6 +131,7 @@ public final class Retrofit {
    */
   @SuppressWarnings("unchecked") // Single-interface proxy creation guarded by parameter safety.
   public <T> T create(final Class<T> service) {
+    // 动态代理实现 service 方法请求
     validateServiceInterface(service);
     return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service },
         new InvocationHandler() {
@@ -183,6 +184,7 @@ public final class Retrofit {
   }
 
   ServiceMethod<?> loadServiceMethod(Method method) {
+    // 解析注解实现方法调用
     ServiceMethod<?> result = serviceMethodCache.get(method);
     if (result != null) return result;
 
@@ -218,6 +220,8 @@ public final class Retrofit {
   }
 
   /**
+   * 返回一个可以处理该返回类型的 CallAdapter
+   *
    * Returns the {@link CallAdapter} for {@code returnType} from the available {@linkplain
    * #callAdapterFactories() factories}.
    *
@@ -228,6 +232,7 @@ public final class Retrofit {
   }
 
   /**
+   * 返回一个 CallAdapter
    * Returns the {@link CallAdapter} for {@code returnType} from the available {@linkplain
    * #callAdapterFactories() factories} except {@code skipPast}.
    *
@@ -611,6 +616,7 @@ public final class Retrofit {
 
       okhttp3.Call.Factory callFactory = this.callFactory;
       if (callFactory == null) {
+        // 默认使用 OkHttp 发起请求
         callFactory = new OkHttpClient();
       }
 

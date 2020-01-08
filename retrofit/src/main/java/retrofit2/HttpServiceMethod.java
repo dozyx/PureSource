@@ -29,13 +29,16 @@ import static retrofit2.Utils.methodError;
 /** Adapts an invocation of an interface method into an HTTP call. */
 abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<ReturnT> {
   /**
+   * 创建一个 http 请求方法。
+   * HttpServiceMethod 是一个抽象类
+   *
    * Inspects the annotations on an interface method to construct a reusable service method that
    * speaks HTTP. This requires potentially-expensive reflection so it is best to build each service
    * method only once and reuse it.
    */
   static <ResponseT, ReturnT> HttpServiceMethod<ResponseT, ReturnT> parseAnnotations(
       Retrofit retrofit, Method method, RequestFactory requestFactory) {
-    boolean isKotlinSuspendFunction = requestFactory.isKotlinSuspendFunction;
+    boolean isKotlinSuspendFunction = requestFactory.isKotlinSuspendFunction;// 是否为 kotlin suspend 声明的函数
     boolean continuationWantsResponse = false;
     boolean continuationBodyNullable = false;
 
@@ -83,6 +86,7 @@ abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<Retur
 
     okhttp3.Call.Factory callFactory = retrofit.callFactory;
     if (!isKotlinSuspendFunction) {
+      // 一般进入这里
       return new CallAdapted<>(requestFactory, callFactory, responseConverter, callAdapter);
     } else if (continuationWantsResponse) {
       //noinspection unchecked Kotlin compiler guarantees ReturnT to be Object.

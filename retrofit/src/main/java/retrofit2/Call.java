@@ -19,6 +19,8 @@ import java.io.IOException;
 import okhttp3.Request;
 
 /**
+ * Retrofit 方法调用过程：向服务器发起请求，并返回响应。
+ *
  * An invocation of a Retrofit method that sends a request to a webserver and returns a response.
  * Each call yields its own HTTP request and response pair. Use {@link #clone} to make multiple
  * calls with the same parameters to the same webserver; this may be used to implement polling or

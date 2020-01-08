@@ -62,6 +62,9 @@ import retrofit2.http.Url;
 import static retrofit2.Utils.methodError;
 import static retrofit2.Utils.parameterError;
 
+/**
+ * 用于请求的构建
+ */
 final class RequestFactory {
   static RequestFactory parseAnnotations(Retrofit retrofit, Method method) {
     return new Builder(retrofit, method).build();
@@ -130,7 +133,7 @@ final class RequestFactory {
   static final class Builder {
     // Upper and lower characters, digits, underscores, and hyphens, starting with a character.
     private static final String PARAM = "[a-zA-Z][a-zA-Z0-9_-]*";
-    private static final Pattern PARAM_URL_REGEX = Pattern.compile("\\{(" + PARAM + ")\\}");
+    private static final Pattern PARAM_URL_REGEX = Pattern.compile("\\{(" + PARAM + ")\\}");//注意：这里{}是字面量，匹配的是 {...}
     private static final Pattern PARAM_NAME_REGEX = Pattern.compile(PARAM);
 
     final Retrofit retrofit;
@@ -209,6 +212,9 @@ final class RequestFactory {
       return new RequestFactory(this);
     }
 
+    /**
+     * 解析方法注解
+     */
     private void parseMethodAnnotation(Annotation annotation) {
       if (annotation instanceof DELETE) {
         parseHttpMethodAndPath("DELETE", ((DELETE) annotation).value(), false);
@@ -246,8 +252,13 @@ final class RequestFactory {
       }
     }
 
+    /**
+     * 解析 Http 方法注解，包括 HTTP 方法名，注解里的值
+     * 值将作为相对 url，这个 url 的 path 部分可以写成类似于 {id} 的参数写法
+     */
     private void parseHttpMethodAndPath(String httpMethod, String value, boolean hasBody) {
       if (this.httpMethod != null) {
+        // 只能指定一个 HTTP method
         throw methodError(method, "Only one HTTP method is allowed. Found: %s and %s.",
             this.httpMethod, httpMethod);
       }
@@ -259,11 +270,13 @@ final class RequestFactory {
       }
 
       // Get the relative URL path and existing query string, if present.
+      // 解析出相对路径和 query 参数
       int question = value.indexOf('?');
       if (question != -1 && question < value.length() - 1) {
         // Ensure the query string does not have any named parameters.
         String queryParams = value.substring(question + 1);
         Matcher queryParamMatcher = PARAM_URL_REGEX.matcher(queryParams);
+        // 请求参数不支持 {...} 动态设置，匹配到将抛出异常
         if (queryParamMatcher.find()) {
           throw methodError(method, "URL query string \"%s\" must not have replace block. "
               + "For dynamic query parameters use @Query.", queryParams);
@@ -279,6 +292,7 @@ final class RequestFactory {
       for (String header : headers) {
         int colon = header.indexOf(':');
         if (colon == -1 || colon == 0 || colon == header.length() - 1) {
+          // 每个 header 必须写成 name:value 形式
           throw methodError(method,
               "@Headers value must be in the form \"Name: Value\". Found: \"%s\"", header);
         }
@@ -778,6 +792,8 @@ final class RequestFactory {
     }
 
     /**
+     * 解析 path 里的参数，即类似于 {id} 的写法
+     *
      * Gets the set of unique path parameters used in the given URI. If a parameter is used twice
      * in the URI, it will only show up once in the set.
      */
@@ -785,7 +801,7 @@ final class RequestFactory {
       Matcher m = PARAM_URL_REGEX.matcher(path);
       Set<String> patterns = new LinkedHashSet<>();
       while (m.find()) {
-        patterns.add(m.group(1));
+        patterns.add(m.group(1));//匹配出占位符里的内容，比如 {aa}，匹配出来的 group1 为 aa，以为正则里使用的 () 元组
       }
       return patterns;
     }
