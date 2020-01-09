@@ -100,6 +100,9 @@ class Platform {
       super(Build.VERSION.SDK_INT >= 24);
     }
 
+    /**
+     * 回调默认执行在主线程，对应请求的 enqueue 方法
+     */
     @Override public Executor defaultCallbackExecutor() {
       return new MainThreadExecutor();
     }

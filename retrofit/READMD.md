@@ -21,3 +21,11 @@ OkHttpCall#execute() 发起请求，在这个方法里调用了 createRawCall() 
 createRawCall() 通过 callFactory 创建 Call。callFactory 是从 Retrofit 里带过来的，即创建时的 OkHttpClient。
 OkHttpClient 实现了 Call.Factory 接口，表明它具备提供请求调用的能力。
 这样请求最终就到了 OkHttpClient，通过调用 newCall(...) 方法返回 Call 对象。
+
+请求流程：
+调用 service 方法，通过 CallAdapter 将原始 Call 转化为 service 方法的返回类型，调用返回类型对应的实例，触发请求，
+请求调用 CallAdapter#adapt(call) 的 call 发起请求。call 请求执行完成返回响应 Response。
+注意有两个 Call，一个是 OkHttp 的，一个是 Retrofit 的，两个返回的 Response 类型也不一样，OkHttpCall 将 OkHttp 的类型转为了 Retrofit 的类型。
+converter 将 body 进行转换得到 service 方法返回类型里指定的类型。
+CallAdapter 有一个 responseType() 方法指定响应体应该转化为哪种类型。这个类型并不一定是 service 方法返回类型的泛型对应的类型，
+比如 Observable<Response<Data>>，RxJava2CallAdapter 的 responseType 将是 Data。

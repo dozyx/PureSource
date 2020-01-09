@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
  */
 public interface CallAdapter<R, T> {
   /**
+   * 要将将 HTTP 响应体转化之后的类型，也就是 service 方法返回类型里的泛型对应的类型
+   *
    * Returns the value type that this adapter uses when converting the HTTP response body to a Java
    * object. For example, the response type for {@code Call<Repo>} is {@code Repo}. This type
    * is used to prepare the {@code call} passed to {@code #adapt}.

@@ -29,6 +29,11 @@ import okio.Okio;
 
 import static retrofit2.Utils.throwIfFatal;
 
+/**
+ * 使用 OkHttp 发起请求，将 OkHttp 的一些类型转为 Retrofit 里的类型，比如 Call、Response
+ * 默认使用的 callFactory 为 OkHttpClient，即 Retrofit 配置的。
+ * 如果不使用 OkHttp 进行网络请求，也可以实现自己的 okhttp3.Call.Factory 类，并传给 Retrofit
+ */
 final class OkHttpCall<T> implements Call<T> {
   private final RequestFactory requestFactory;
   private final Object[] args;
@@ -198,6 +203,7 @@ final class OkHttpCall<T> implements Call<T> {
   }
 
   Response<T> parseResponse(okhttp3.Response rawResponse) throws IOException {
+    // 将 OkHttp 的响应转为 Retrofit 里的 Response 类型
     ResponseBody rawBody = rawResponse.body();
 
     // Remove the body's source (the only stateful object) so we can pass the response along.
@@ -223,6 +229,7 @@ final class OkHttpCall<T> implements Call<T> {
 
     ExceptionCatchingResponseBody catchingBody = new ExceptionCatchingResponseBody(rawBody);
     try {
+      // 使用 converter 转换 body，并将 body 封装到 Response 中
       T body = responseConverter.convert(catchingBody);
       return Response.success(body, rawResponse);
     } catch (RuntimeException e) {

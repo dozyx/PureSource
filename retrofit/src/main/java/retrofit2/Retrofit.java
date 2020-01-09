@@ -348,15 +348,19 @@ public final class Retrofit {
    */
   public <T> Converter<ResponseBody, T> nextResponseBodyConverter(
       @Nullable Converter.Factory skipPast, Type type, Annotation[] annotations) {
+    // skipPast 默认 null
+    // type 是 CallAdapter 的 responseType() 方法的返回类型
     Objects.requireNonNull(type, "type == null");
     Objects.requireNonNull(annotations, "annotations == null");
 
-    int start = converterFactories.indexOf(skipPast) + 1;
+    int start = converterFactories.indexOf(skipPast) + 1;// converterFactories没有 null 元素，indexOf(null) 会返回 -1
     for (int i = start, count = converterFactories.size(); i < count; i++) {
       Converter<ResponseBody, ?> converter =
           converterFactories.get(i).responseBodyConverter(type, annotations, this);
       if (converter != null) {
         //noinspection unchecked
+        // 返回一个可以将响应体转为 type 的 converter
+        // 注意，这里只返回了一个，如果这个 converter 最后转换出错，也不会寻找下一个 converter
         return (Converter<ResponseBody, T>) converter;
       }
     }
@@ -635,6 +639,7 @@ public final class Retrofit {
 
       // Add the built-in converter factory first. This prevents overriding its behavior but also
       // ensures correct behavior when using converters that consume all types.
+      // converter 包含三类，内置、用户设置、平台默认。它们是顺序相关的，前面的 converter 处理之后不会继续使用后面的 converter
       converterFactories.add(new BuiltInConverters());
       converterFactories.addAll(this.converterFactories);
       converterFactories.addAll(platform.defaultConverterFactories());

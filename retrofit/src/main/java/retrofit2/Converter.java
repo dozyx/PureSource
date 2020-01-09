@@ -34,6 +34,8 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 /**
+ * 转化 HTTP 对象
+ *
  * Convert objects to and from their representation in HTTP. Instances are created by {@linkplain
  * Factory a factory} which is {@linkplain Retrofit.Builder#addConverterFactory(Factory) installed}
  * into the {@link Retrofit} instance.
@@ -44,6 +46,8 @@ public interface Converter<F, T> {
   /** Creates {@link Converter} instances based on a type and target usage. */
   abstract class Factory {
     /**
+     * 将响应体转为 type 类型，如果无法处理返回 null
+     *
      * Returns a {@link Converter} for converting an HTTP response body to {@code type}, or null if
      * {@code type} cannot be handled by this factory. This is used to create converters for
      * response types such as {@code SimpleResponse} from a {@code Call<SimpleResponse>}
@@ -55,6 +59,8 @@ public interface Converter<F, T> {
     }
 
     /**
+     * 将 type 类型转为请求体，如果无法处理返回 null
+     *
      * Returns a {@link Converter} for converting {@code type} to an HTTP request body, or null if
      * {@code type} cannot be handled by this factory. This is used to create converters for types
      * specified by {@link Body @Body}, {@link Part @Part}, and {@link PartMap @PartMap}
@@ -66,6 +72,8 @@ public interface Converter<F, T> {
     }
 
     /**
+     * 将其他类型转为 String，不处理返回 null
+     *
      * Returns a {@link Converter} for converting {@code type} to a {@link String}, or null if
      * {@code type} cannot be handled by this factory. This is used to create converters for types
      * specified by {@link Field @Field}, {@link FieldMap @FieldMap} values,

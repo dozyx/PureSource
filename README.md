@@ -7,6 +7,7 @@
 * RxJava 2.2.16
 * OkHttp 3.14.4
 * Retrofit 2.7.0
+* adapter-rxjava2 2.7.0
 * LeakCanary 1.6.3
 * Material 1.1.0-beta02
 

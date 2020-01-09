@@ -24,16 +24,21 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 import okhttp3.Request;
 
+/**
+ * 默认添加的 CallAdapter，可以处理的返回类型为 Call
+ */
 final class DefaultCallAdapterFactory extends CallAdapter.Factory {
   private final @Nullable Executor callbackExecutor;
 
   DefaultCallAdapterFactory(@Nullable Executor callbackExecutor) {
+    // 默认的 Executor 是通过 Platform 获取的，为主线程回调
     this.callbackExecutor = callbackExecutor;
   }
 
   @Override public @Nullable CallAdapter<?, ?> get(
       Type returnType, Annotation[] annotations, Retrofit retrofit) {
     if (getRawType(returnType) != Call.class) {
+      // 只处理 Call 类型
       return null;
     }
     if (!(returnType instanceof ParameterizedType)) {
@@ -52,6 +57,8 @@ final class DefaultCallAdapterFactory extends CallAdapter.Factory {
       }
 
       @Override public Call<Object> adapt(Call<Object> call) {
+        // 如果没有指定 executor 的话，直接返回传入的 call
+        // 如果指定则返回 ExecutorCallbackCall，ExecutorCallbackCall 只是将 enqueue() 请求的结果通过 executor 来回调
         return executor == null
             ? call
             : new ExecutorCallbackCall<>(executor, call);
