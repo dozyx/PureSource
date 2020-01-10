@@ -10,6 +10,7 @@
 * adapter-rxjava2 2.7.0
 * LeakCanary 1.6.3
 * Material 1.1.0-beta02
+* Fragmentation 1.3.8（已经不维护的项目）
 
 
 ### 源码导入

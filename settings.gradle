@@ -1,2 +1,2 @@
-include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava', ':okhttp', ':retrofit', ':leakcanary', ':material', ':adapter-rxjava2'
-rootProject.name='PureSource'
+include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava', ':okhttp', ':retrofit', ':leakcanary', ':material', ':adapter-rxjava2',':fragmentation:fragmentation_core', ':fragmentation:fragmentation_swipeback', ':fragmentation:fragmentation', ':fragmentation:eventbus_activity_scope'
+rootProject.name = 'PureSource'

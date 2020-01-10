@@ -1,0 +1,8 @@
+apply plugin: 'com.android.library'
+apply from: "${rootDir}/buildCommon.gradle"
+android {
+
+    defaultConfig {
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+}

@@ -1,0 +1,5 @@
+apply from: "${rootDir}/buildLib.gradle"
+
+dependencies {
+    compileOnly 'org.greenrobot:eventbus:3.1.1'
+}
