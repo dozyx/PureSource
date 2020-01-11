@@ -4101,6 +4101,8 @@ public abstract class Observable<T> implements ObservableSource<T> {
     }
 
     /**
+     * 合并多个 source 的发送，需要一一对应，如果其中一个 source 先发送了通知事件（error 或 complete），那么其他 source 也会被中断。
+     *
      * Returns an Observable that emits the results of a specified combiner function applied to combinations of
      * items emitted, in sequence, by an Iterable of other ObservableSources.
      * <p>
