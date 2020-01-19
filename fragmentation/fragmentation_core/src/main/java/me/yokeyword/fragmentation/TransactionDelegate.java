@@ -534,6 +534,7 @@ class TransactionDelegate {
     }
 
     /**
+     * 将 requestCode 保存到将要打开的 fragment 的 argument
      * save requestCode
      */
     private void saveRequestCode(FragmentManager fm, Fragment from, Fragment to, int requestCode) {
@@ -541,6 +542,7 @@ class TransactionDelegate {
         ResultRecord resultRecord = new ResultRecord();
         resultRecord.requestCode = requestCode;
         bundle.putParcelable(FRAGMENTATION_ARG_RESULT_RECORD, resultRecord);
+        // putFragment 将一个 fragment 的引用保存到 bundle，这里保存的是启动 fragment 的 fragment，可以猜测是用来返回 result
         fm.putFragment(bundle, FRAGMENTATION_STATE_SAVE_RESULT, from);
     }
 
