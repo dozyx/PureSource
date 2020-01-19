@@ -23,6 +23,11 @@
 
 如果该库依赖了其他库，可以在 https://mvnrepository.com/ 上找到，然后添加到 build.gradle 文件中。
 
+### 阅读源码
+* 根据某条线来阅读   
+* 分支、细节可以选择性先忽略
+* 带着问题阅读
+
 ### RxJava
 * [Operator fusion in RxJava 2](https://proandroiddev.com/operator-fusion-in-rxjava-2-dcd6612cffae)    
     RxJava 工作流程、优化和底层实现的一些概念。
