@@ -37,6 +37,9 @@ public class HeaderPositionCalculator {
   }
 
   /**
+   * 判断这个位置是否需要有粘性的 header
+   * 条件：recyclerView 的第一个 view；有关联的 id
+   *
    * Determines if a view should have a sticky header.
    * The view has a sticky header if:
    * 1. It is the first element in the recycler view
@@ -49,19 +52,23 @@ public class HeaderPositionCalculator {
    */
   public boolean hasStickyHeader(View itemView, int orientation, int position) {
     int offset, margin;
+    // itemView 是 RecyclerView 里的 view
     mDimensionCalculator.initMargins(mTempRect1, itemView);
     if (orientation == LinearLayout.VERTICAL) {
-      offset = itemView.getTop();
+      offset = itemView.getTop();// getTop() 得到的是相对于 parent 的位置
       margin = mTempRect1.top;
     } else {
       offset = itemView.getLeft();
       margin = mTempRect1.left;
     }
-
+    // 判断条件：这个 item 有关联的 header，并且 offset <= margin
+    // offset <= margin 表示这个 item 部分被遮挡
     return offset <= margin && mAdapter.getHeaderId(position) >= 0;
   }
 
   /**
+   * 判断这个位置的 item 是否需要有 header
+   *
    * Determines if an item in the list should have a header that is different than the item in the
    * list that immediately precedes it. Items with no headers will always return false.
    *
@@ -77,16 +84,19 @@ public class HeaderPositionCalculator {
     long headerId = mAdapter.getHeaderId(position);
 
     if (headerId < 0) {
+      // 没有关联的 headerId 将直接返回
       return false;
     }
 
     long nextItemHeaderId = -1;
+    // nextItemPosition 这个命名有点坑，得到的是前一个 item 的位置
     int nextItemPosition = position + (isReverseLayout? 1: -1);
     if (!indexOutOfBounds(nextItemPosition)){
       nextItemHeaderId = mAdapter.getHeaderId(nextItemPosition);
     }
     int firstItemPosition = isReverseLayout? mAdapter.getItemCount()-1 : 0;
 
+    // position 为第一个位置或者 headerId 与前一个不同时，需要创建新的 header
     return position == firstItemPosition || headerId != nextItemHeaderId;
   }
 

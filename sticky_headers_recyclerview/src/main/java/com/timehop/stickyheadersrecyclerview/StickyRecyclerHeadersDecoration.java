@@ -72,6 +72,7 @@ public class StickyRecyclerHeadersDecoration extends RecyclerView.ItemDecoration
     if (itemPosition == RecyclerView.NO_POSITION) {
         return;
     }
+    // 为 header 预留绘制空间，需要注意，header 是绘制在对应 item 的前面，所以 offset 设置的是 top 和 left
     if (mHeaderPositionCalculator.hasNewHeader(itemPosition, mOrientationProvider.isReverseLayout(parent))) {
       View header = getHeaderView(parent, itemPosition);
       setItemOffsetsForHeader(outRect, header, mOrientationProvider.getOrientation(parent));

@@ -12,6 +12,7 @@ import static android.view.ViewGroup.MarginLayoutParams;
 public class DimensionCalculator {
 
   /**
+   * 将 view 的 margin 赋给 margins
    * Populates {@link Rect} with margins for any view.
    *
    *
