@@ -105,10 +105,15 @@ public class HeaderPositionCalculator {
   }
 
   public void initHeaderBounds(Rect bounds, RecyclerView recyclerView, View header, View firstView, boolean firstHeader) {
+    // firstView：itemView
+    // firstHeader：是否有粘性 header
     int orientation = mOrientationProvider.getOrientation(recyclerView);
+    // 初始化 header 绘制区域，保存在 bounds 中
     initDefaultHeaderOffset(bounds, recyclerView, header, firstView, orientation);
 
     if (firstHeader && isStickyHeaderBeingPushedOffscreen(recyclerView, header)) {
+      // 对于粘性 header 即第一个位置的 header 需要特殊处理
+      // 处理粘性 header 移出屏幕
       View viewAfterNextHeader = getFirstViewUnobscuredByHeader(recyclerView, header);
       int firstViewUnderHeaderPosition = recyclerView.getChildAdapterPosition(viewAfterNextHeader);
       View secondHeader = mHeaderProvider.getHeader(recyclerView, firstViewUnderHeaderPosition);
@@ -118,6 +123,7 @@ public class HeaderPositionCalculator {
   }
 
   private void initDefaultHeaderOffset(Rect headerMargins, RecyclerView recyclerView, View header, View firstView, int orientation) {
+    // firstView：itemView
     int translationX, translationY;
     mDimensionCalculator.initMargins(mTempRect1, header);
 
@@ -146,6 +152,9 @@ public class HeaderPositionCalculator {
             translationY + header.getHeight());
   }
 
+  /**
+   * 判断粘性 header 是否在移出屏幕
+   */
   private boolean isStickyHeaderBeingPushedOffscreen(RecyclerView recyclerView, View stickyHeader) {
     View viewAfterHeader = getFirstViewUnobscuredByHeader(recyclerView, stickyHeader);
     int firstViewUnderHeaderPosition = recyclerView.getChildAdapterPosition(viewAfterHeader);
@@ -197,6 +206,7 @@ public class HeaderPositionCalculator {
   }
 
   /**
+   * 返回第一个没有被 header 遮挡的 item
    * Returns the first item currently in the RecyclerView that is not obscured by a header.
    *
    * @param parent Recyclerview containing all the list items
@@ -216,6 +226,8 @@ public class HeaderPositionCalculator {
   }
 
   /**
+   * 判断一个 item 是否被 header 遮挡
+   *
    * Determines if an item is obscured by a header
    *
    *
