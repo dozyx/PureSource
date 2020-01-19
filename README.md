@@ -27,6 +27,7 @@
 * 根据某条线来阅读   
 * 分支、细节可以选择性先忽略
 * 带着问题阅读
+* 先分析出整体流程，再探讨细节
 
 ### RxJava
 * [Operator fusion in RxJava 2](https://proandroiddev.com/operator-fusion-in-rxjava-2-dcd6612cffae)    
