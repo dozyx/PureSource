@@ -2,5 +2,5 @@ include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava',
         ':okhttp', ':retrofit', ':leakcanary', ':material', ':adapter-rxjava2',
         ':fragmentation:fragmentation_core', ':fragmentation:fragmentation_swipeback',
         ':fragmentation:fragmentation', ':fragmentation:eventbus_activity_scope',
-        ':sticky_headers_recyclerview'
+        ':sticky_headers_recyclerview',':gson',
 rootProject.name = 'PureSource'
