@@ -25,6 +25,8 @@ public final class RequestLine {
   }
 
   /**
+   * 获取请求行，形式如 "GET / HTTP/1.1"
+   *
    * Returns the request status line, like "GET / HTTP/1.1". This is exposed to the application by
    * {@link HttpURLConnection#getHeaderFields}, so it needs to be set even if the transport is
    * HTTP/2.

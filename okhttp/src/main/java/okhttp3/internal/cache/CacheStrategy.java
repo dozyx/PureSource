@@ -40,6 +40,8 @@ import static java.net.HttpURLConnection.HTTP_REQ_TOO_LONG;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
+ * 提供一个 request 和缓存个的 response，以决定缓存策略是使用网络、缓存还是两者都用
+ *
  * Given a request and cached response, this figures out whether to use the network, the cache, or
  * both.
  *
@@ -49,9 +51,11 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public final class CacheStrategy {
   /** The request to send on the network, or null if this call doesn't use the network. */
+  // null 表示不需要使用网络
   public final @Nullable Request networkRequest;
 
   /** The cached response to return or validate; or null if this call doesn't use a cache. */
+  // null 表示不适用缓存
   public final @Nullable Response cacheResponse;
 
   CacheStrategy(Request networkRequest, Response cacheResponse) {

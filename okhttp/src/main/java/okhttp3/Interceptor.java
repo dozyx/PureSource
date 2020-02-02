@@ -25,6 +25,9 @@ import javax.annotation.Nullable;
  * or response.
  */
 public interface Interceptor {
+  /**
+   * 在实现中需要调用 charin#proceed 来处理实际的 Http 工作
+   */
   Response intercept(Chain chain) throws IOException;
 
   interface Chain {

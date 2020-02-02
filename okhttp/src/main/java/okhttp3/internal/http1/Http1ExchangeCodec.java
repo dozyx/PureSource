@@ -193,14 +193,18 @@ public final class Http1ExchangeCodec implements ExchangeCodec {
   /** Returns bytes of a request header for sending on an HTTP transport. */
   public void writeRequest(Headers headers, String requestLine) throws IOException {
     if (state != STATE_IDLE) throw new IllegalStateException("state: " + state);
+    // 写入请求行
+    // 通过前面的拦截器创建的 Sink 进行写操作
     sink.writeUtf8(requestLine).writeUtf8("\r\n");
     for (int i = 0, size = headers.size(); i < size; i++) {
+      // 写入请求头
       sink.writeUtf8(headers.name(i))
           .writeUtf8(": ")
           .writeUtf8(headers.value(i))
           .writeUtf8("\r\n");
     }
     sink.writeUtf8("\r\n");
+    // 状态模式
     state = STATE_OPEN_REQUEST_BODY;
   }
 

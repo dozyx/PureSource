@@ -40,10 +40,12 @@ public final class CallServerInterceptor implements Interceptor {
 
     long sentRequestMillis = System.currentTimeMillis();
 
+    // 写入请求头
     exchange.writeRequestHeaders(request);
 
     boolean responseHeadersStarted = false;
     Response.Builder responseBuilder = null;
+    // 如果允许并有请求体的话，写入请求体
     if (HttpMethod.permitsRequestBody(request.method()) && request.body() != null) {
       // If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100
       // Continue" response before transmitting the request body. If we don't get that, return
@@ -82,6 +84,7 @@ public final class CallServerInterceptor implements Interceptor {
       exchange.noRequestBody();
     }
 
+    // 结束请求
     if (request.body() == null || !request.body().isDuplex()) {
       exchange.finishRequest();
     }
@@ -90,10 +93,12 @@ public final class CallServerInterceptor implements Interceptor {
       exchange.responseHeadersStart();
     }
 
+    // 得到响应头
     if (responseBuilder == null) {
       responseBuilder = exchange.readResponseHeaders(false);
     }
 
+    // 构建初步响应
     Response response = responseBuilder
         .request(request)
         .handshake(exchange.connection().handshake())
@@ -117,6 +122,7 @@ public final class CallServerInterceptor implements Interceptor {
 
     exchange.responseHeadersEnd(response);
 
+    // 构建响应体
     if (forWebSocket && code == 101) {
       // Connection is upgrading, but we need to ensure interceptors see a non-null response body.
       response = response.newBuilder()

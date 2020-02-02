@@ -24,7 +24,14 @@ import okhttp3.internal.connection.RealConnection;
 import okio.Sink;
 import okio.Source;
 
-/** Encodes HTTP requests and decodes HTTP responses. */
+/**
+ * 对 HTTP 请求进行编码，并对响应解码。
+ * 实现有两个：
+ * {@link okhttp3.internal.http1.Http1ExchangeCodec}
+ * {@link okhttp3.internal.http2.Http2ExchangeCodec}
+ *
+ * Encodes HTTP requests and decodes HTTP responses.
+ */
 public interface ExchangeCodec {
   /**
    * The timeout to use while discarding a stream of input data. Since this is used for connection

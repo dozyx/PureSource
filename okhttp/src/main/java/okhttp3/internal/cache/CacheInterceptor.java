@@ -51,14 +51,17 @@ public final class CacheInterceptor implements Interceptor {
   }
 
   @Override public Response intercept(Chain chain) throws IOException {
+    // 根据 request 得到缓存的 Response
+    // Candidate 候补
     Response cacheCandidate = cache != null
         ? cache.get(chain.request())
         : null;
 
     long now = System.currentTimeMillis();
 
+    // CacheStrategy 用来确定使用何种缓存：网络、缓存的 response、还是两者
     CacheStrategy strategy = new CacheStrategy.Factory(now, chain.request(), cacheCandidate).get();
-    Request networkRequest = strategy.networkRequest;
+    Request networkRequest = strategy.networkRequest;// 注意，strategy.networkRequest 不一定为 chain.request()，为 null 时表示无须网络请求
     Response cacheResponse = strategy.cacheResponse;
 
     if (cache != null) {
@@ -66,10 +69,12 @@ public final class CacheInterceptor implements Interceptor {
     }
 
     if (cacheCandidate != null && cacheResponse == null) {
+      // 缓存不可用
       closeQuietly(cacheCandidate.body()); // The cache candidate wasn't applicable. Close it.
     }
 
     // If we're forbidden from using the network and the cache is insufficient, fail.
+    // 禁止网络请求，并且缓存不可用，直接失败
     if (networkRequest == null && cacheResponse == null) {
       return new Response.Builder()
           .request(chain.request())
@@ -83,6 +88,7 @@ public final class CacheInterceptor implements Interceptor {
     }
 
     // If we don't need the network, we're done.
+    // 不需要网络请求，直接返回缓存的 response
     if (networkRequest == null) {
       return cacheResponse.newBuilder()
           .cacheResponse(stripBody(cacheResponse))

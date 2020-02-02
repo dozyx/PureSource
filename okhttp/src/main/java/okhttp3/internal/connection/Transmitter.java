@@ -43,6 +43,8 @@ import static okhttp3.internal.Util.closeQuietly;
 import static okhttp3.internal.Util.sameConnection;
 
 /**
+ * OkHttp 应用层和网络层之间的桥梁。这个类提供了高层次的应用层基础：连接、请求、响应、流
+ *
  * Bridge between OkHttp's application and network layers. This class exposes high-level application
  * layer primitives: connections, requests, responses, and streams.
  *
@@ -112,6 +114,9 @@ public final class Transmitter {
     return e;
   }
 
+  /**
+   * 通知监听器请求开始
+   */
   public void callStart() {
     this.callStackTrace = Platform.get().getStackTraceForCloseable("response.body().close()");
     eventListener.callStart(call);

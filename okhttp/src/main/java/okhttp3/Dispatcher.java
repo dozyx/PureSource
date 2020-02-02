@@ -30,6 +30,8 @@ import okhttp3.RealCall.AsyncCall;
 import okhttp3.internal.Util;
 
 /**
+ * 调度器。处理何时执行异步请求。
+ *
  * Policy on when async requests are executed.
  *
  * <p>Each dispatcher uses an {@link ExecutorService} to run calls internally. If you supply your

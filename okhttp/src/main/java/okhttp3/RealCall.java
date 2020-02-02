@@ -151,7 +151,7 @@ final class RealCall implements Call {
       assert (!Thread.holdsLock(client.dispatcher()));
       boolean success = false;
       try {
-        executorService.execute(this);
+        executorService.execute(this);// Runnable 中调用 execute()，注意是 AsyncCall 的 execute()
         success = true;
       } catch (RejectedExecutionException e) {
         InterruptedIOException ioException = new InterruptedIOException("executor rejected");
@@ -210,14 +210,21 @@ final class RealCall implements Call {
   Response getResponseWithInterceptorChain() throws IOException {
     // Build a full stack of interceptors.
     List<Interceptor> interceptors = new ArrayList<>();
+    // 先添加用户定义的 interceptor
     interceptors.addAll(client.interceptors());
+    // 负责失败重试和处理重定向
     interceptors.add(new RetryAndFollowUpInterceptor(client));
+    // 请求时，对必要的Header进行一些添加，接收响应时，移除必要的Header
     interceptors.add(new BridgeInterceptor(client.cookieJar()));
+    // 负责读取缓存直接返回、更新缓存
     interceptors.add(new CacheInterceptor(client.internalCache()));
+    // 负责和服务器建立连接
     interceptors.add(new ConnectInterceptor(client));
     if (!forWebSocket) {
+      // 配置 OkHttpClient 时设置的 networkInterceptors
       interceptors.addAll(client.networkInterceptors());
     }
+    // 负责向服务器发送请求数据、从服务器读取响应数据
     interceptors.add(new CallServerInterceptor(forWebSocket));
 
     Interceptor.Chain chain = new RealInterceptorChain(interceptors, transmitter, null, 0,
@@ -226,6 +233,7 @@ final class RealCall implements Call {
 
     boolean calledNoMoreExchanges = false;
     try {
+      // 责任链模式开始链式调用
       Response response = chain.proceed(originalRequest);
       if (transmitter.isCanceled()) {
         closeQuietly(response);

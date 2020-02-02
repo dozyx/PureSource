@@ -37,6 +37,8 @@ import okio.Sink;
 import okio.Source;
 
 /**
+ * 传递单个 HTTP 请求/响应对。
+ *
  * Transmits a single HTTP request and a response pair. This layers connection management and events
  * on {@link ExchangeCodec}, which handles the actual I/O.
  */
@@ -45,7 +47,7 @@ public final class Exchange {
   final Call call;
   final EventListener eventListener;
   final ExchangeFinder finder;
-  final ExchangeCodec codec;
+  final ExchangeCodec codec;// 有两种，分别对应 http1 和 http2
   private boolean duplex;
 
   public Exchange(Transmitter transmitter, Call call, EventListener eventListener,

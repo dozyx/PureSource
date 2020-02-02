@@ -30,6 +30,7 @@ import okhttp3.internal.connection.Transmitter;
 import static okhttp3.internal.Util.checkDuration;
 
 /**
+ *
  * A concrete interceptor chain that carries the entire interceptor chain: all application
  * interceptors, the OkHttp core, all network interceptors, and finally the network caller.
  *
@@ -119,6 +120,7 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
   public Response proceed(Request request, Transmitter transmitter, @Nullable Exchange exchange)
       throws IOException {
+    // 三个参数在整个责任链的调用中会传递下去
     if (index >= interceptors.size()) throw new AssertionError();
 
     calls++;
@@ -138,7 +140,12 @@ public final class RealInterceptorChain implements Interceptor.Chain {
     // Call the next interceptor in the chain.
     RealInterceptorChain next = new RealInterceptorChain(interceptors, transmitter, exchange,
         index + 1, request, call, connectTimeout, readTimeout, writeTimeout);
+    // 获取当前索引的 interceptor
     Interceptor interceptor = interceptors.get(index);
+    // 取出 index 索引的 interceptor，调用其 intercept(chain) 方法，然后在方法中会调用，chain.proceed(...)
+    // 这样，这个链就会经过每个 interceptor 的 intercept(chain) 处理，然后直到最后一个 interceptor，最后一个发起实际的请求，并返回 response
+    // 上一个 interceptor 在 intercept(chain) 中得到这个 response，然后继续返回。
+    // RealInterceptorChain 形成了一个完整的链调用。
     Response response = interceptor.intercept(next);
 
     // Confirm that the next interceptor made its required call to chain.proceed().
