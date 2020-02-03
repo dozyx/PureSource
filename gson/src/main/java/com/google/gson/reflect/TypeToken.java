@@ -26,6 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 用来表示泛型 T，Java 没有提供表示泛型的方式，因此需要使用此类来确定泛型的类型
+ * 例子：TypeToken<List<String>> list = new TypeToken<List<String>>() {};
+ * 上面的例子创建了一个空的匿名内部类
+ *
  * Represents a generic type {@code T}. Java doesn't yet provide a way to
  * represent generic types, so this class does. Forces clients to create a
  * subclass of this class which enables retrieval the type information even at
