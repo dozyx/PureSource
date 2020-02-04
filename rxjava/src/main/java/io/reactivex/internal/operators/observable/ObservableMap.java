@@ -54,6 +54,7 @@ public final class ObservableMap<T, U> extends AbstractObservableWithUpstream<T,
             U v;
 
             try {
+                // 应用 mapper 函数进行转换，如果产生异常，会被 catch
                 v = ObjectHelper.requireNonNull(mapper.apply(t), "The mapper function returned a null value.");
             } catch (Throwable ex) {
                 fail(ex);
