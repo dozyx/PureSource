@@ -3,4 +3,5 @@ include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava',
         ':fragmentation:fragmentation_core', ':fragmentation:fragmentation_swipeback',
         ':fragmentation:fragmentation', ':fragmentation:eventbus_activity_scope',
         ':sticky_headers_recyclerview',':gson',
+        ':eventbus:EventBus', ':eventbus:EventBusAnnotationProcessor',
 rootProject.name = 'PureSource'
