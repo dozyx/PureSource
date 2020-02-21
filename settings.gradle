@@ -5,4 +5,5 @@ include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava',
         ':sticky_headers_recyclerview',':gson',
         ':eventbus:EventBus', ':eventbus:EventBusAnnotationProcessor',
         ':swiperefreshlayout'
+include ':SmartRefreshLayout:refresh-layout', ':SmartRefreshLayout:refresh-header', ':SmartRefreshLayout:refresh-footer'
 rootProject.name = 'PureSource'

@@ -14,6 +14,7 @@
 * Gson 2.8.5
 * EventBus 3.2.0
 * SwipeRefreshLayout 1.0.0
+* SmartRefreshLayout 1.1.0
 
 
 ### 源码导入
