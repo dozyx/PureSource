@@ -26,6 +26,8 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * 当订阅发生时不进行 item 发射，只有当调用了 connect 方法时才发射。这样可以在存在多个订阅者的情况下，只有当所有订阅者都准备好的时候才发射数据。
+ *
  * A {@code ConnectableObservable} resembles an ordinary {@link Observable}, except that it does not begin
  * emitting items when it is subscribed to, but only when its {@link #connect} method is called. In this way you
  * can wait for all intended {@link Observer}s to {@link Observable#subscribe} to the {@code Observable}

@@ -18,6 +18,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.disposables.DisposableHelper;
 
 /**
+ * 隐藏包装的 ObservableSource 的真实身份。
+ * 比如 source 是 BehaviorSubject，那么使用了 subject.hide 之后，返回的是一个 Observable，将无法直接调用 subject.onNext 等方法
+ * 这样就达到了隐藏该 source 为 BehaviorSubject 的目的，并防止其专有的 api 被调用。
  * Hides the identity of the wrapped ObservableSource and its Disposable.
  * @param <T> the value type
  *

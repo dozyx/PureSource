@@ -5,6 +5,7 @@
 
 RxJava 理解：
 * ReactiveX 的基本思想是 `events are data and data are events`
+* 从整体的角度来看，当我们在创建一个 RxJava 的调用链的时候，便已经将所有的对象构建「组装」好，一旦订阅发生，那么就会开始发生数据的生产和流动。
 
 
 操作符一般实现原理：   

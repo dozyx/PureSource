@@ -24,6 +24,9 @@ import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.plugins.RxJavaPlugins;
 
 /**
+ * 只要还存在一个订阅，那么 observable 就会继续保持连接状态，后续的订阅会继续接收到后续的 item，而不是从头开始。
+ * 当所有的订阅者都取消订阅之后，将取消数据发送
+ *
  * Returns an observable sequence that stays connected to the source as long as
  * there is at least one subscription to the observable sequence.
  *

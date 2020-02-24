@@ -20,6 +20,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.disposables.DisposableHelper;
 import io.reactivex.internal.util.*;
 
+/**
+ * 当另一个 observable 发送了 item 之后，停止当前 observable 的发送。
+ */
 public final class ObservableTakeUntil<T, U> extends AbstractObservableWithUpstream<T, T> {
 
     final ObservableSource<? extends U> other;
@@ -34,6 +37,7 @@ public final class ObservableTakeUntil<T, U> extends AbstractObservableWithUpstr
         TakeUntilMainObserver<T, U> parent = new TakeUntilMainObserver<T, U>(child);
         child.onSubscribe(parent);
 
+        // 同时订阅了两个 observable
         other.subscribe(parent.otherObserver);
         source.subscribe(parent);
     }
@@ -113,6 +117,7 @@ public final class ObservableTakeUntil<T, U> extends AbstractObservableWithUpstr
 
             @Override
             public void onNext(U t) {
+                // 取消发送
                 DisposableHelper.dispose(this);
                 otherComplete();
             }
