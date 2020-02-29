@@ -1,0 +1,2 @@
+apply plugin: 'java'
+// 暂时没找到去掉自身 java 依赖的方法

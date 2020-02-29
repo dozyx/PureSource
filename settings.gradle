@@ -7,3 +7,4 @@ include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava',
         ':swiperefreshlayout'
 include ':SmartRefreshLayout:refresh-layout', ':SmartRefreshLayout:refresh-header', ':SmartRefreshLayout:refresh-footer'
 rootProject.name = 'PureSource'
+include ':java'
