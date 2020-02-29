@@ -37,6 +37,8 @@ import java.util.function.Function;
 import sun.misc.SharedSecrets;
 
 /**
+ * 红黑树部分暂时没看
+ *
  * Hash table based implementation of the <tt>Map</tt> interface.  This
  * implementation provides all of the optional map operations, and permits
  * <tt>null</tt> values and the <tt>null</tt> key.  (The <tt>HashMap</tt>
@@ -277,7 +279,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
      */
     static class Node<K,V> implements Map.Entry<K,V> {
-        final int hash;
+        final int hash;// 这个 hash 值经过了 HashMap.hash(key) 处理，使元素分布更分散
         final K key;
         V value;
         Node<K,V> next;
@@ -373,15 +375,20 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
+     * 返回第一个不大于 cap 的幂次方数
      * Returns a power of two size for the given target capacity.
      */
     static final int tableSizeFor(int cap) {
+        // 下面的位移运算得到尾部全 1 的一个前提是有一个 bit 为 1，所以减 1 之后，即使 cap 为 0，也能得到一个带 1 的数
+        // 如果 cap 已经是 2 的幂次，如果不减 1，那么得到的结果为 cap 的两倍，但是这个函数的结果应该得到的是不超过 cap 的第一个 2 的幂次方数
         int n = cap - 1;
+        // 使用逻辑右移使 n 的尾部 bit 全为 1，如，0001000，处理后得到的是 0001111
         n |= n >>> 1;
         n |= n >>> 2;
         n |= n >>> 4;
         n |= n >>> 8;
         n |= n >>> 16;
+        // n + 1 之后，得到一个 2 的幂次方数字
         return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
     }
 
@@ -407,6 +414,9 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     transient int size;
 
     /**
+     * HashMap 发生结构性变化的次数，用于触发迭代过程中的 ConcurrentModificationException
+     * fail-fast 机制
+     *
      * The number of times this HashMap has been structurally modified
      * Structural modifications are those that change the number of mappings in
      * the HashMap or otherwise modify its internal structure (e.g.,
@@ -416,6 +426,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     transient int modCount;
 
     /**
+     * 大于这个阈值需要 resize。
+     * 在初次构造的时候，threshold 可能等于容量的值，但后续添加元素后会变为使用 *factor
      * The next size value at which to resize (capacity * load factor).
      *
      * @serial
@@ -446,15 +458,19 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     public HashMap(int initialCapacity, float loadFactor) {
         if (initialCapacity < 0)
+            // 初始容量必须大于 0
             throw new IllegalArgumentException("Illegal initial capacity: " +
                                                initialCapacity);
         if (initialCapacity > MAXIMUM_CAPACITY)
+            // 初始容量不能大于 1<<30
             initialCapacity = MAXIMUM_CAPACITY;
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
             throw new IllegalArgumentException("Illegal load factor: " +
                                                loadFactor);
         this.loadFactor = loadFactor;
         this.threshold = tableSizeFor(initialCapacity);
+        // 这里的 threshold 并没有乘以 loadFactor 是为了减少一次运算？
+        // 这么恐怖的优化吗？在 resize() 方法里有一种情况使用 threshold 作为新数组的容量，然后再计算 threshold
     }
 
     /**
@@ -566,18 +582,24 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     final Node<K,V> getNode(int hash, Object key) {
         Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
+        // n 为数组的长度
+        // first 该 bucket 的节点元素
         if ((tab = table) != null && (n = tab.length) > 0 &&
             (first = tab[(n - 1) & hash]) != null) {
+            // 进入条件：数组非空，数组长度非 0，对应 bucket 存在元素
             if (first.hash == hash && // always check first node
                 ((k = first.key) == key || (key != null && key.equals(k))))
+                // 检查第一个节点是不是
                 return first;
             if ((e = first.next) != null) {
                 if (first instanceof TreeNode)
+                    // 从红黑树中检查
                     return ((TreeNode<K,V>)first).getTreeNode(hash, key);
                 do {
                     if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
                         return e;
+                    // 遍历链表
                 } while ((e = e.next) != null);
             }
         }
@@ -618,54 +640,77 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param hash hash for key
      * @param key the key
      * @param value the value to put
-     * @param onlyIfAbsent if true, don't change existing value
+     * @param onlyIfAbsent if true, don't change existing value 为 true 时，不改变已有的值
      * @param evict if false, the table is in creation mode.
      * @return previous value, or null if none
      */
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                    boolean evict) {
         Node<K,V>[] tab; Node<K,V> p; int n, i;
+        // table 初始化为 null
         if ((tab = table) == null || (n = tab.length) == 0)
+            // 第一次的时候进入，resize() 初始化一个数组
             n = (tab = resize()).length;
+        // 在 if 中将该 bucket 的元素赋给 p，即 p 表示旧元素
         if ((p = tab[i = (n - 1) & hash]) == null)
+            // 该 bucket 没有元素，直接放入
             tab[i] = newNode(hash, key, value, null);
         else {
+            // 存在冲突
             Node<K,V> e; K k;
             if (p.hash == hash &&
                 ((k = p.key) == key || (key != null && key.equals(k))))
+                // e 与 bucket 第一个元素 p 的 key 一样，将 p 赋给 e，后续直接修改 e 的值即可。可以看出，e 表示要插入的节点
                 e = p;
             else if (p instanceof TreeNode)
+                // 插入树结构中
                 e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
             else {
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
+                        // 遍历到了末尾，直接插入尾部
                         p.next = newNode(hash, key, value, null);
                         if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            // 大于 8，转为红黑树
                             treeifyBin(tab, hash);
                         break;
                     }
                     if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
+                        // key 已存在，退出
                         break;
                     p = e;
                 }
             }
             if (e != null) { // existing mapping for key
+                // e 不为 null，所以已存在该 key，直接更新现有元素的值
                 V oldValue = e.value;
                 if (!onlyIfAbsent || oldValue == null)
+                    // onlyIfAbsent 为 true 表示，只有当该值不存在时，才对其修改
                     e.value = value;
-                afterNodeAccess(e);
+                afterNodeAccess(e);// 通知访问了某个元素
                 return oldValue;
             }
         }
         ++modCount;
         if (++size > threshold)
-            resize();
-        afterNodeInsertion(evict);
+            resize();// 元素插入后判断进行扩容
+        afterNodeInsertion(evict);// 通知插入了某个元素
         return null;
     }
 
     /**
+     * 返回一个数组，初始化或者将 table 的大小扩大两倍
+     *
+     * 流程：
+     *   创建一个新数组
+     *   将旧数组元素移入新数组，旧 bucket：
+     *     只有一个元素，直接移过去
+     *     为红黑树，分离放入新位置（这部分还没怎么看）
+     *     链表，采用尾插法构建低、高两条链，放入新数组的 j 和 j+oldCap 位置（j 为该链表在旧数组的位置）
+     *   返回新数组
+     *
+     *
      * Initializes or doubles table size.  If null, allocates in
      * accord with initial capacity target held in field threshold.
      * Otherwise, because we are using power-of-two expansion, the
@@ -675,57 +720,89 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @return the table
      */
     final Node<K,V>[] resize() {
+        // table 一开始是 null
+        // oldTab 保存旧的数组
         Node<K,V>[] oldTab = table;
+        // oldCap 旧的数组容量
         int oldCap = (oldTab == null) ? 0 : oldTab.length;
+        // oldThr 记录旧的阈值
         int oldThr = threshold;
         int newCap, newThr = 0;
         if (oldCap > 0) {
+            // 通过旧容量计算新容量和新阈值
             if (oldCap >= MAXIMUM_CAPACITY) {
+                // 已经到了允许的最大容量，无法继续扩容，将阈值设置到最大，并返回原 table
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
             }
             else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
                      oldCap >= DEFAULT_INITIAL_CAPACITY)
+                // 新阈值扩大两倍
                 newThr = oldThr << 1; // double threshold
         }
         else if (oldThr > 0) // initial capacity was placed in threshold
+            // 只有旧阈值，则直接使用阈值作为新容量
+            // HashMap(int initialCapacity, float loadFactor) 中，这个阈值是通过 tableSizeFor(cap) 方法计算的，为 2 的幂次方
             newCap = oldThr;
         else {               // zero initial threshold signifies using defaults
+            // oldCap 为 0，并且 oldThr 为 0
+            // 第一次会进入这里。采用默认值作为容量和阈值
             newCap = DEFAULT_INITIAL_CAPACITY;
             newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
         }
         if (newThr == 0) {
+            // 使用负载因子计算阈值
             float ft = (float)newCap * loadFactor;
             newThr = (newCap < MAXIMUM_CAPACITY && ft < (float)MAXIMUM_CAPACITY ?
                       (int)ft : Integer.MAX_VALUE);
         }
         threshold = newThr;
+        // 新建一个数组
         @SuppressWarnings({"rawtypes","unchecked"})
         Node<K,V>[] newTab = (Node<K,V>[])new Node[newCap];
+        // 将新建的数组赋给 table
         table = newTab;
         if (oldTab != null) {
+            // 需要将旧数组的元素放入新数组
             for (int j = 0; j < oldCap; ++j) {
-                Node<K,V> e;
+                Node<K,V> e;// 记录旧数组索引位置的元素
                 if ((e = oldTab[j]) != null) {
-                    oldTab[j] = null;
+                    oldTab[j] = null;// 去掉旧数组该索引元素的引用
                     if (e.next == null)
+                        // 该位置只有一个元素，直接放入新数组的指定位置
+                        // 不会存在哈希冲突吗？不会，因为如果存在冲突，那么冲突的元素在旧数组的位置也是一样，旧数组该位置就不止一个元素
                         newTab[e.hash & (newCap - 1)] = e;
                     else if (e instanceof TreeNode)
+                        // 该位置元素是一个红黑树结构
                         ((TreeNode<K,V>)e).split(this, newTab, j, oldCap);
                     else { // preserve order
                         Node<K,V> loHead = null, loTail = null;
                         Node<K,V> hiHead = null, hiTail = null;
                         Node<K,V> next;
+                        // 该 bucket 的元素是一个链表结构
+                        // 链表里的每个元素重新分配到新数组中，只会处于两个位置，其中一个与旧的位置一样
+                        // 如何确定元素在新数组的位置？旧数组元素位置是通过 hash & (cap - 1) 确定的，cap 扩大一倍之后，
+                        // 元素位置变为 hash & (cap << 1 - 1)，即只采用了 hash 后面部分计算数组中的位置，
+                        // (e.hash & oldCap) == 0，因为 oldCap 是二次幂，所以，表示的是该位是 0，不影响新数组位置的计算，
+                        // 即这个元素在新数组中索引一样
+                        // 而另一个位置是 j + oldCap，原因是，将 j 表示为二进制 XXXX，那么新的位置为 1XXXX = 10000 + XXXX = oldCap + j
                         do {
-                            next = e.next;
+                            next = e.next;// 记录 e 的下一个元素
                             if ((e.hash & oldCap) == 0) {
+                                // e 在新数组的索引与旧数组一样
                                 if (loTail == null)
+                                    // 第一次进来，即第一个元素的时候， loTail 为 null
+                                    // 记录 head 元素
                                     loHead = e;
                                 else
+                                    // 第二次进来，向 tail 添加元素
+                                    // 采用的尾插法插入元素
                                     loTail.next = e;
+                                // 变更 tail 元素
                                 loTail = e;
                             }
                             else {
+                                // 与上面部分逻辑一样，采用尾插法插入元素
                                 if (hiTail == null)
                                     hiHead = e;
                                 else
@@ -735,10 +812,12 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                         } while ((e = next) != null);
                         if (loTail != null) {
                             loTail.next = null;
+                            // 低位元素位置与旧数组中一样
                             newTab[j] = loHead;
                         }
                         if (hiTail != null) {
                             hiTail.next = null;
+                            // 高位元素在新数组的位置为 j + oldCap
                             newTab[j + oldCap] = hiHead;
                         }
                     }
@@ -2126,13 +2205,15 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         }
 
         /**
+         * resize() 时对旧数组中红黑树节点进行处理
+         *
          * Splits nodes in a tree bin into lower and upper tree bins,
          * or untreeifies if now too small. Called only from resize;
          * see above discussion about split bits and indices.
          *
          * @param map the map
-         * @param tab the table for recording bin heads
-         * @param index the index of the table being split
+         * @param tab the table for recording bin heads 新数组
+         * @param index the index of the table being split 要被
          * @param bit the bit of hash to split on
          */
         final void split(HashMap<K,V> map, Node<K,V>[] tab, int index, int bit) {
