@@ -24,6 +24,10 @@ import io.reactivex.functions.Function;
 import io.reactivex.internal.disposables.*;
 import io.reactivex.internal.queue.SpscLinkedArrayQueue;
 
+/**
+ * 将多个发射相同类型数据 T 的 source 的数据，压缩成另一种类型 R。
+ * 当其中一个 source 触发了 event，那么 ObservableZip 也会触发 event。
+ */
 public final class ObservableZip<T, R> extends Observable<R> {
 
     final ObservableSource<? extends T>[] sources;

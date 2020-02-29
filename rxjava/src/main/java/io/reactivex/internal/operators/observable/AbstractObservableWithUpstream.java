@@ -17,6 +17,8 @@ import io.reactivex.*;
 import io.reactivex.internal.fuseable.HasUpstreamObservableSource;
 
 /**
+ * 表示一个有上游 source 的 Observable
+ *
  * Base class for operators with a source consumable.
  *
  * @param <T> the input source type
