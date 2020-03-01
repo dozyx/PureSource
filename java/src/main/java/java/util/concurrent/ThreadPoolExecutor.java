@@ -45,6 +45,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.*;
 
 /**
+ * 核心线程是如何保证执行完任务依然存活的？https://blog.csdn.net/su20145104009/article/details/79042909
+ *
  * An {@link ExecutorService} that executes each submitted task using
  * one of possibly several pooled threads, normally configured
  * using {@link Executors} factory methods.
@@ -379,10 +381,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * below).
      */
     private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
-    private static final int COUNT_BITS = Integer.SIZE - 3;
-    private static final int CAPACITY   = (1 << COUNT_BITS) - 1;
+    private static final int COUNT_BITS = Integer.SIZE - 3;// 29
+    private static final int CAPACITY   = (1 << COUNT_BITS) - 1;// 前三位为 0，后 29 位为 1
 
     // runState is stored in the high-order bits
+    // 高位保存 runState
     private static final int RUNNING    = -1 << COUNT_BITS;
     private static final int SHUTDOWN   =  0 << COUNT_BITS;
     private static final int STOP       =  1 << COUNT_BITS;
@@ -390,7 +393,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     private static final int TERMINATED =  3 << COUNT_BITS;
 
     // Packing and unpacking ctl
+    // ctl 高三位记录 runState
     private static int runStateOf(int c)     { return c & ~CAPACITY; }
+    // ctl 低 29 位记录线程数量
     private static int workerCountOf(int c)  { return c & CAPACITY; }
     private static int ctlOf(int rs, int wc) { return rs | wc; }
 
@@ -1047,6 +1052,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         boolean timedOut = false; // Did the last poll() time out?
 
         for (;;) {
+            // 死循环取消队列里的消息来执行
+            // 这部分实现了核心线程的存活
             int c = ctl.get();
             int rs = runStateOf(c);
 
@@ -1071,7 +1078,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
             try {
                 Runnable r = timed ?
                     workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
-                    workQueue.take();
+                    workQueue.take();// 阻塞
                 if (r != null)
                     return r;
                 timedOut = true;
@@ -1341,15 +1348,20 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      */
     public void execute(Runnable command) {
         if (command == null)
+            // 任务不能是空
             throw new NullPointerException();
         /*
          * Proceed in 3 steps:
+         * 使用三个步骤处理：
          *
          * 1. If fewer than corePoolSize threads are running, try to
          * start a new thread with the given command as its first
          * task.  The call to addWorker atomically checks runState and
          * workerCount, and so prevents false alarms that would add
          * threads when it shouldn't, by returning false.
+         * 如果处于运行状态的线程少于核心线程数，尝试启动一个新线程来执行 task。
+         * addWorker(...) 会自动（atomically 是自动还是原子？）检查运行状态和 worker 的数量
+         * ，并且通过返回 false 来防止添加不应该的线程（最后一句翻译可能有问题）
          *
          * 2. If a task can be successfully queued, then we still need
          * to double-check whether we should have added a thread
@@ -1357,25 +1369,33 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
          * the pool shut down since entry into this method. So we
          * recheck state and if necessary roll back the enqueuing if
          * stopped, or start a new thread if there are none.
+         * 如果 task 可以成功入队，仍然需要进行双重检查来判断是已经添加一个线程，还是线程池在进入这个方法时已经被停止。
+         * 因此我们重新检查状态，如果有必要的话在停止情况下回滚入队，或者在没有线程的情况下开启一个新线程。
          *
          * 3. If we cannot queue task, then we try to add a new
          * thread.  If it fails, we know we are shut down or saturated
          * and so reject the task.
+         * 如果 task 无法加入队列，那么尝试添加一个新的线程。如果失败，表示线程池被关闭或者饱和，因此需要拒绝该 task。
          */
         int c = ctl.get();
         if (workerCountOf(c) < corePoolSize) {
+            // 当前任务数小于核心线程数，直接添加执行
             if (addWorker(command, true))
                 return;
             c = ctl.get();
         }
         if (isRunning(c) && workQueue.offer(command)) {
+            // 处于运行状态，并且添加到阻塞队列成功
             int recheck = ctl.get();
             if (! isRunning(recheck) && remove(command))
+                // 再次检查发现不是运行状态，需要回滚，即移除 task，并触发拒绝策略
                 reject(command);
             else if (workerCountOf(recheck) == 0)
+                // 没有工作中的线程，需要启动一个新的
                 addWorker(null, false);
         }
         else if (!addWorker(command, false))
+            // 添加到阻塞队列失败，尝试直接启动线程执行，无法执行启动拒绝策略
             reject(command);
     }
 
