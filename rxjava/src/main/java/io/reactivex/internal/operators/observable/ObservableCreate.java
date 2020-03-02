@@ -34,11 +34,13 @@ public final class ObservableCreate<T> extends Observable<T> {
 
     @Override
     protected void subscribeActual(Observer<? super T> observer) {
+        // observer 是下游的观察者
         CreateEmitter<T> parent = new CreateEmitter<T>(observer);
         observer.onSubscribe(parent);
 
         try {
             // source 在 subscribe() 方法种调用传入的 emitter 发送数据
+            // source 产生的 event 会先传递给 parent，再传给下游的 observer
             source.subscribe(parent);
         } catch (Throwable ex) {
             Exceptions.throwIfFatal(ex);

@@ -40,6 +40,7 @@ public final class ObservableObserveOn<T> extends AbstractObservableWithUpstream
         if (scheduler instanceof TrampolineScheduler) {
             source.subscribe(observer);
         } else {
+            // 创建一个 Worker，后面用来执行 event 的分发
             Scheduler.Worker w = scheduler.createWorker();
 
             source.subscribe(new ObserveOnObserver<T>(observer, w, delayError, bufferSize));

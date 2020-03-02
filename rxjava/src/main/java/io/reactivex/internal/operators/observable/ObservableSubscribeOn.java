@@ -24,13 +24,16 @@ public final class ObservableSubscribeOn<T> extends AbstractObservableWithUpstre
 
     public ObservableSubscribeOn(ObservableSource<T> source, Scheduler scheduler) {
         super(source);
+        // 传入 upstream 的 source 和一个 scheduler
         this.scheduler = scheduler;
     }
 
     @Override
     public void subscribeActual(final Observer<? super T> observer) {
+        // SubscribeOnObserver 接收 upstream 的 event
         final SubscribeOnObserver<T> parent = new SubscribeOnObserver<T>(observer);
 
+        // 触发下游的 onSubscribe 回调
         observer.onSubscribe(parent);
 
         parent.setDisposable(scheduler.scheduleDirect(new SubscribeTask(parent)));
@@ -89,11 +92,13 @@ public final class ObservableSubscribeOn<T> extends AbstractObservableWithUpstre
 
         SubscribeTask(SubscribeOnObserver<T> parent) {
             // 将上游的订阅放到 task 中执行
+            // 封装到一个 Runnable 中，在 run() 方法中调用上游的 subscribe(...) 方法
             this.parent = parent;
         }
 
         @Override
         public void run() {
+            // parent 是 SubscribeOnObserver
             source.subscribe(parent);
         }
     }

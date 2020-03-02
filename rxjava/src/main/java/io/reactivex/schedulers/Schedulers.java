@@ -80,6 +80,7 @@ public final class Schedulers {
 
         TRAMPOLINE = TrampolineScheduler.instance();
 
+        // initNewThreadScheduler(...) 也是个 hook，最后返回一个 NewThreadScheduler 对象
         NEW_THREAD = RxJavaPlugins.initNewThreadScheduler(new NewThreadTask());
     }
 
@@ -236,6 +237,7 @@ public final class Schedulers {
      */
     @NonNull
     public static Scheduler newThread() {
+        // onNewThreadScheduler 提供 hook 时机
         return RxJavaPlugins.onNewThreadScheduler(NEW_THREAD);
     }
 

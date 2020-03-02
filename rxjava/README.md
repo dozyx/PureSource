@@ -42,3 +42,129 @@ onNext()。
 调换 subscribeOn 和 observeOn 的顺序的影响？    
 实际功能没有影响，但是两个操作符内部的 ObservableXXX 会有影响。
 
+
+
+## 线程切换
+
+### subscribeOn
+
+> 分析的是 Scheduler 为 Schedulers.newThread()
+
+Observable#subscribeOn
+
+* 下游 subscribe(...) 之后，调用到 `ObservableSubscribeOn#subscribeActual(...)`
+
+  ```java
+  public void subscribeActual(final Observer<? super T> observer) {
+          // SubscribeOnObserver 接收 upstream 的 event
+          final SubscribeOnObserver<T> parent = new SubscribeOnObserver<T>(observer);
+  
+          // 触发下游的 onSubscribe 回调
+          observer.onSubscribe(parent);
+  
+          parent.setDisposable(scheduler.scheduleDirect(new SubscribeTask(parent)));
+      }
+  ```
+
+  向 scheduler 提交一个 task，`SubscribeTask` 是一个 Runnable，在 run() 方法里执行上游 source 的订阅。所以 task 执行的线程就是上游订阅执行的线程。
+
+* ```java
+  public Disposable scheduleDirect(@NonNull Runnable run, long delay, @NonNull TimeUnit unit) {
+          final Worker w = createWorker();
+  
+          final Runnable decoratedRun = RxJavaPlugins.onSchedule(run);
+  
+          DisposeTask task = new DisposeTask(decoratedRun, w);
+  
+          w.schedule(task, delay, unit);
+  
+          return task;
+      }
+  ```
+
+  `createWorker()` 是 Scheduler 的唯一抽象方法，`Worker#schedule(..)` 是 Worker 的唯一抽象方法。scheduleDirect(..) 这个实现的功能就是，将 task 提交到 Worker 中执行。
+
+* Scheduler.newThread() 返回的是 NewThreadScheduler，NewThreadScheduler#createWorker() 返回的是 `NewThreadWorker`。NewThreadScheduler 的关键是创建 Worker，其他内容只是关于线程的创建。
+
+  NewThreadWorker#schedule(..) 最后调用到 NewThreadWorker#scheduleActual(..)
+
+  ```java
+  public ScheduledRunnable scheduleActual(final Runnable run, long delayTime, @NonNull TimeUnit unit, @Nullable DisposableContainer parent) {
+          Runnable decoratedRun = RxJavaPlugins.onSchedule(run);
+  
+          ScheduledRunnable sr = new ScheduledRunnable(decoratedRun, parent);
+  
+          if (parent != null) {
+              if (!parent.add(sr)) {
+                  return sr;
+              }
+          }
+  
+          Future<?> f;
+          try {
+              if (delayTime <= 0) {
+                  f = executor.submit((Callable<Object>)sr);
+              } else {
+                  f = executor.schedule((Callable<Object>)sr, delayTime, unit);
+              }
+              sr.setFuture(f);
+          } catch (RejectedExecutionException ex) {
+              if (parent != null) {
+                  parent.remove(sr);
+              }
+              RxJavaPlugins.onError(ex);
+          }
+  
+          return sr;
+      }
+  ```
+
+  将 task 提交到线程池中执行。
+
+  
+
+  #### 小结
+
+  subscribeOn(..) 设置一个 Scheduler，内部实现创建了一个 ObservableSubscribeOn，在其 subscribeActual(..) 方法中，将上游 source 的订阅放入一个 task 中，而这个 task 通过 Scheduler 来执行。
+
+  Scheduler 执行 task 是通过 Worker 的 schedule() 方法来执行，Scheduler 实现类需要实现 createWorker() 方法来提供 Worker 实现。
+
+  对于 NewThreadWorker，其内部 schedule(..) 将 task 提交线程池中执行。 
+
+  
+
+  ### observeOn
+
+  经过对 subscribeOn(..) 的分析，其实可以猜测下 observeOn(..) 的处理，两者是相似的，因为它们接收的都是一个 Scheduler 参数。subscribeOn(..) 使用 Scheduler 来执行订阅的 task，那么 observeOn(..) 的 Scheduler 自然是用来执行向下游发送的 task。
+
+  代码分析流程：
+
+  * Observable#observeOn(..) 创建一个 ObservableObserveOn 对象
+  * `ObservableObserveOn`
+    * 使用 Scheduler 创建一个 Worker
+    * 内部的 ObserveOnObserver 收到上游的 event 之后，对 data 和 notify 进行记录、标记
+    * 使用 Worker 提交一个 task（收到 data 和 notify 都会尝试启动，但只会启动一次）。ObserveOnObserver 同时实现的 Runnable 接口，执行的 task 正是它的 run(...) 方法 
+    * ObserveOnObserver#run() 会启动死循环，检查是否发射了 data 或者触发了 notify，如果有，则向下游的 observer 传递。这样，就是实现了 observer 的线程切换。
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

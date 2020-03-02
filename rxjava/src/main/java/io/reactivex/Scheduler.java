@@ -163,6 +163,7 @@ public abstract class Scheduler {
     }
 
     /**
+     * 无延迟安排一个 task
      * Schedules the given task on this Scheduler without any time delay.
      *
      * <p>
@@ -194,13 +195,23 @@ public abstract class Scheduler {
      */
     @NonNull
     public Disposable scheduleDirect(@NonNull Runnable run, long delay, @NonNull TimeUnit unit) {
+        // 调用 createWorker() 创建一个 Worker。createWorker() 是一个抽象方法
         final Worker w = createWorker();
 
+        // 提供 hook 机会
         final Runnable decoratedRun = RxJavaPlugins.onSchedule(run);
 
+        // 将 Worker 和 task 都封装到一个 DisposeTask，这个 task 会作为 Disposable 类型返回值返回
         DisposeTask task = new DisposeTask(decoratedRun, w);
 
-        w.schedule(task, delay, unit);
+        // 使用 Worker 执行 task（经过封装的 DisposeTask）
+        // 为什么 task 包含了 worker，而又要 worker 执行 task？大概是意图不同吧，DisposeTask 在 dispose 时，需要用到 worker，
+        // 而 w.schedule(...) 方法实际接收的是一个 Runnable 对象，所以它是也可以选择直接传入 decoratedRun，但，没必要
+        // w.schedule 也是一个抽象方法
+        w.schedule(task, delay, unit);// Worker#schedule(..) 也返回了一个 Disposable 对象，但这里没有使用
+
+        // 从上面分析可以知道，Scheduler 的实现类需要实现两个地方：
+        // createWorker() 提供一个 Worker；Worker 本身也是一个抽象类，需要实现 schedule(...) 方法
 
         return task;
     }
@@ -559,6 +570,9 @@ public abstract class Scheduler {
         }
     }
 
+    /**
+     * 使一个 Runnable 具有 Disposable 特性。装饰者模式
+     */
     static final class DisposeTask implements Disposable, Runnable, SchedulerRunnableIntrospection {
 
         @NonNull
@@ -578,6 +592,7 @@ public abstract class Scheduler {
         @Override
         public void run() {
             runner = Thread.currentThread();
+            // 执行原始的 task，并在执行完之后 dispose
             try {
                 decoratedRun.run();
             } finally {

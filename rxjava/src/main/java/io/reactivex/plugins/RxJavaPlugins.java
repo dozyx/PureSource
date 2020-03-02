@@ -460,6 +460,7 @@ public final class RxJavaPlugins {
     }
 
     /**
+     * 发生 schedule 时触发，可以对 task 进行 hook
      * Called when a task is scheduled.
      * @param run the runnable instance
      * @return the replacement runnable

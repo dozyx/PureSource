@@ -129,10 +129,13 @@ public class NewThreadWorker extends Scheduler.Worker implements Disposable {
      */
     @NonNull
     public ScheduledRunnable scheduleActual(final Runnable run, long delayTime, @NonNull TimeUnit unit, @Nullable DisposableContainer parent) {
+        // 提供 hook 机会。在 Scheduler#scheduleDirect(...) 方法里也 hook 了一次，为什么 hook 两次？
         Runnable decoratedRun = RxJavaPlugins.onSchedule(run);
 
+        // 封装 task 到 ScheduledRunnable 中。Scheduler#scheduleDirect(...) 也封装了一次，可以理解成给 task 添加额外的特性
         ScheduledRunnable sr = new ScheduledRunnable(decoratedRun, parent);
 
+        // Scheduler.newThread() 调用传入的 parent 为 null，先不管
         if (parent != null) {
             if (!parent.add(sr)) {
                 return sr;
@@ -141,6 +144,7 @@ public class NewThreadWorker extends Scheduler.Worker implements Disposable {
 
         Future<?> f;
         try {
+            // 将 task 提交到 executor 线程池中执行
             if (delayTime <= 0) {
                 f = executor.submit((Callable<Object>)sr);
             } else {

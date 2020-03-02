@@ -150,6 +150,8 @@ public final class SchedulerPoolFactory {
 
     static void tryPutIntoPool(boolean purgeEnabled, ScheduledExecutorService exec) {
         if (purgeEnabled && exec instanceof ScheduledThreadPoolExecutor) {
+            // 将线程池翻入缓冲池中，为什么？代码里也没看到有使用缓冲池的地方？而且是直接使用 exec 作为 key？
+            // 稍微理解下，POOLS 的作用似乎并不是作为缓存。而是为了清理未执行的 task。那么为什么不使用 List 呢？性能考虑？
             ScheduledThreadPoolExecutor e = (ScheduledThreadPoolExecutor) exec;
             POOLS.put(e, exec);
         }

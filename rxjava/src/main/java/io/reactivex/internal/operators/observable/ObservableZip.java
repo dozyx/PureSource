@@ -169,6 +169,7 @@ public final class ObservableZip<T, R> extends Observable<R> {
             final boolean delayError = this.delayError;
 
             // 为什么这么写？为什么这么写？为什么这么写？
+            // 采用两个 for 循环的一个合理猜测是，内部的 for 执行 break 只会跳出内部的循环
             for (;;) {
 
                 for (;;) {

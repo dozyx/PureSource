@@ -28,13 +28,14 @@ public final class NewThreadScheduler extends Scheduler {
 
     final ThreadFactory threadFactory;
 
-    private static final String THREAD_NAME_PREFIX = "RxNewThreadScheduler";
+    private static final String THREAD_NAME_PREFIX = "RxNewThreadScheduler";// 创建的线程名称前缀，可以在这里表明线程是由哪个 Scheduler 创建的
     private static final RxThreadFactory THREAD_FACTORY;
 
     /** The name of the system property for setting the thread priority for this Scheduler. */
     private static final String KEY_NEWTHREAD_PRIORITY = "rx2.newthread-priority";
 
     static {
+        // 读取系统属性配置的优先级（这个一般不会配置吧。。。但也不排除定制系统会用来统一分配一个优先级），这个优先级不能超出线程优先级范围
         int priority = Math.max(Thread.MIN_PRIORITY, Math.min(Thread.MAX_PRIORITY,
                 Integer.getInteger(KEY_NEWTHREAD_PRIORITY, Thread.NORM_PRIORITY)));
 
