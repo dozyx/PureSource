@@ -15,6 +15,8 @@ package io.reactivex.internal.fuseable;
 import java.util.concurrent.Callable;
 
 /**
+ * 标记 interface，表示 reactive 类型持有的是一个标量/常量的值，出于优化目的，可以在 assembly 阶段提取出来。
+ *
  * A marker interface indicating that a scalar, constant value
  * is held by the implementing reactive type which can be
  * safely extracted during assembly time can be used for
@@ -32,6 +34,7 @@ import java.util.concurrent.Callable;
 public interface ScalarCallable<T> extends Callable<T> {
 
     // overridden to remove the throws Exception
+    // 重载是为了移除 throws，所以本质上跟 Callable 没有区别
     @Override
     T call();
 }

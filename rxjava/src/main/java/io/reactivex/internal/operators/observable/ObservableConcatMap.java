@@ -36,9 +36,11 @@ public final class ObservableConcatMap<T, U> extends AbstractObservableWithUpstr
     public ObservableConcatMap(ObservableSource<T> source, Function<? super T, ? extends ObservableSource<? extends U>> mapper,
             int bufferSize, ErrorMode delayErrors) {
         super(source);
+        // source 上游
+        // mapper 将上游的 emission 转为一个 source，并订阅这些 source
         this.mapper = mapper;
-        this.delayErrors = delayErrors;
-        this.bufferSize = Math.max(8, bufferSize);
+        this.delayErrors = delayErrors;//错误不中断其他 source？
+        this.bufferSize = Math.max(8, bufferSize);// 缓存大小，最大为 8
     }
 
     @Override

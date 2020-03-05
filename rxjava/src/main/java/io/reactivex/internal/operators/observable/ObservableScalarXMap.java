@@ -26,6 +26,16 @@ import io.reactivex.internal.fuseable.QueueDisposable;
 import io.reactivex.plugins.RxJavaPlugins;
 
 /**
+ * 用于 scalar-sourced 的 XMap 操作符，其中X == { flat, concat, switch }，这三个操作符的 mapper 类型结构都是一样的
+ * 标量源？只发送一个值的 source，也就是 onNext 只会触发一次，比如 ObservableJust。
+ *
+ * 总结：如果上游 source 是一个 scalar 的 source，那么直接通过 Callable#call() 得到它的值，
+ * 这样就减少了一层 Observer（因为不这样做的话，需要对上游 source 订阅来得到它的值）。结果通过这个值，经过 mapper 得到
+ * 一个 source2，如果这个 source2 也是一个 scalar source 的话，直接触发下游 observer 的 onNext 和 onComplete，如果不是
+ * scalar source，那么需要对 source2 进行订阅来得到它的发送。
+ *
+ * 如果上游是一个 scalar source，flat, concat, switch 三者似乎没有区别。
+ *
  * Utility classes to work with scalar-sourced XMap operators (where X == { flat, concat, switch }).
  */
 public final class ObservableScalarXMap {
@@ -48,18 +58,24 @@ public final class ObservableScalarXMap {
     public static <T, R> boolean tryScalarXMapSubscribe(ObservableSource<T> source,
             Observer<? super R> observer,
             Function<? super T, ? extends ObservableSource<? extends R>> mapper) {
+        // observer 是下游的订阅者
         if (source instanceof Callable) {
+            // 如果上游 source 是 Callable 对象
             T t;
 
             try {
+                // 执行 Callable#call() 得到返回值
+                // II 对于 scalar 的 source，call() 返回的值就是唯一 emission 的值。
                 t = ((Callable<T>)source).call();
             } catch (Throwable ex) {
+                // call() 方法执行异常，发送 error
                 Exceptions.throwIfFatal(ex);
                 EmptyDisposable.error(ex, observer);
                 return true;
             }
 
             if (t == null) {
+                // 返回的 t 为 null，发送 complete
                 EmptyDisposable.complete(observer);
                 return true;
             }
@@ -67,33 +83,50 @@ public final class ObservableScalarXMap {
             ObservableSource<? extends R> r;
 
             try {
+                // 执行 mapper 的 apply(..) 方法，将 t 转换成一个 source，并确保返回的 source 非 null。
+                // t 是前面通过 Callable#call() 得到的，Callable 也就是上游的 source。
                 r = ObjectHelper.requireNonNull(mapper.apply(t), "The mapper returned a null ObservableSource");
             } catch (Throwable ex) {
+                // 发送 error
                 Exceptions.throwIfFatal(ex);
                 EmptyDisposable.error(ex, observer);
                 return true;
             }
 
             if (r instanceof Callable) {
+                // mapper#apply(..) 得到的也是一个 Callable
+                // II 也就是经过 mapper 后得到的 source 也是一个 scalar source，那么可以进一步优化
                 R u;
 
                 try {
+                    // 调用这个 Callable 的 call() 方法
+                    // II 得到 scalar source 要发送的值
                     u = ((Callable<R>)r).call();
                 } catch (Throwable ex) {
+                    // 发送 error
                     Exceptions.throwIfFatal(ex);
                     EmptyDisposable.error(ex, observer);
                     return true;
                 }
 
                 if (u == null) {
+                    // 发送 complete
                     EmptyDisposable.complete(observer);
                     return true;
                 }
+                // 构建一个 ScalarDisposable 对象
                 ScalarDisposable<R> sd = new ScalarDisposable<R>(observer, u);
+                // 订阅开始
                 observer.onSubscribe(sd);
+                // 执行任务
+                // II 会触发 onNext，并紧跟 onNext
                 sd.run();
             } else {
+                // r 是 mapper#apply(..) 得到的
+                // II XMap 之后得到的不是 scalar source，对其进行订阅
                 r.subscribe(observer);
+                // 第一遍看完还是很懵，看似每一句都大概清楚，但是不知道为什么这样用
+                // 接着看了 ScalarDisposable 的 doc，大概明白 scalar 表示的是只有一个值的意思，比如一个 scalar source 只会触发一次 onNext，接着触发 onComplete。
             }
 
             return true;
@@ -169,6 +202,7 @@ public final class ObservableScalarXMap {
     }
 
     /**
+     * 表示一个触发一个 onNext 之后紧跟一个 onComplete 的 Disposable。也就是只发送一个 onNext，不就是 Single?
      * Represents a Disposable that signals one onNext followed by an onComplete.
      *
      * @param <T> the value type

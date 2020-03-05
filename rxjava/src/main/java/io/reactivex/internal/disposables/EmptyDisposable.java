@@ -18,6 +18,7 @@ import io.reactivex.annotations.Nullable;
 import io.reactivex.internal.fuseable.QueueDisposable;
 
 /**
+ * 无状态的空 Disposable，可以认为一直是 empty 和 disposed 的。
  * Represents a stateless empty Disposable that reports being always
  * empty and disposed.
  * <p>It is also async-fuseable but empty all the time.

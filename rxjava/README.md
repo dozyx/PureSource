@@ -2,6 +2,7 @@
 * source：表示一个可以发送数据的源
 * emission：由 source 发送，包括数据和事件
 * 上游/下游：操作符的前一个/后一个操作
+* 注释采用 `II`表示阅读源码的第二遍，以区分思路
 
 RxJava 理解：
 * ReactiveX 的基本思想是 `events are data and data are events`
