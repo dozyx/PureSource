@@ -1391,7 +1391,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                 // 再次检查发现不是运行状态，需要回滚，即移除 task，并触发拒绝策略
                 reject(command);
             else if (workerCountOf(recheck) == 0)
-                // 没有工作中的线程，需要启动一个新的
+                // 没有工作中的线程，需要启动一个新的非核心线程执行
                 addWorker(null, false);
         }
         else if (!addWorker(command, false))

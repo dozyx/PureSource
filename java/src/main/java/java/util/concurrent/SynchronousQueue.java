@@ -42,6 +42,11 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 
 /**
+ * 这样的一个阻塞队列：insert 必须等待相应的 remove，反之亦然。
+ * synchronous queue 没有任何内部容量。
+ * 不能对 synchronous 队列使用 peek 方法，因为元素只在尝试移除的时候存在；也不能进行插入除非另一个线程在尝试移除它。
+ * 不能进行迭代，因为没有东西可以迭代。
+ *
  * A {@linkplain BlockingQueue blocking queue} in which each insert
  * operation must wait for a corresponding remove operation by another
  * thread, and vice versa.  A synchronous queue does not have any
@@ -522,7 +527,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         }
     }
 
-    /** Dual Queue */
+    /**
+     * Dual Queue
+     */
     static final class TransferQueue<E> extends Transferer<E> {
         /*
          * This extends Scherer-Scott dual queue algorithm, differing,
@@ -606,6 +613,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         transient volatile QNode cleanMe;
 
         TransferQueue() {
+            // 初始化一个虚拟节点
             QNode h = new QNode(null, false); // initialize to dummy node.
             head = h;
             tail = h;
@@ -638,6 +646,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         }
 
         /**
+         * 加入或者取出一个 item
          * Puts or takes an item.
          */
         @SuppressWarnings("unchecked")
@@ -668,15 +677,15 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              */
 
             QNode s = null; // constructed/reused as needed
-            boolean isData = (e != null);
+            boolean isData = (e != null);// 如果元素不是 null，那么是一个 data
 
             for (;;) {
                 QNode t = tail;
                 QNode h = head;
-                if (t == null || h == null)         // saw uninitialized value
-                    continue;                       // spin
+                if (t == null || h == null)         // saw uninitialized value 未初始化值
+                    continue;                       // spin 自旋
 
-                if (h == t || t.isData == isData) { // empty or same-mode
+                if (h == t || t.isData == isData) { // empty or same-mode 没有元素或者 mode 相同（是否都是 data）
                     QNode tn = t.next;
                     if (t != tail)                  // inconsistent read
                         continue;
@@ -862,6 +871,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      *        access; otherwise the order is unspecified.
      */
     public SynchronousQueue(boolean fair) {
+        // fair 为 true，等待线程以 FIFO 顺序访问，否则使用的是未指定的顺序？
         transferer = fair ? new TransferQueue<E>() : new TransferStack<E>();
     }
 
@@ -900,6 +910,8 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
     }
 
     /**
+     * 如果有另一个线程在获取，则将元素插入到队列中。
+     *
      * Inserts the specified element into this queue, if another thread is
      * waiting to receive it.
      *

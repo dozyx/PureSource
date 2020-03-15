@@ -222,6 +222,8 @@ public class ArrayList<E> extends AbstractList<E>
 
     private static int calculateCapacity(Object[] elementData, int minCapacity) {
         if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+            // 如果是初始的空数组，返回默认容量和最小容量里的最大值。
+            // DEFAULT_CAPACITY 默认是 10，也就是这里返回最小也是 10。
             return Math.max(DEFAULT_CAPACITY, minCapacity);
         }
         return minCapacity;
@@ -236,6 +238,7 @@ public class ArrayList<E> extends AbstractList<E>
 
         // overflow-conscious code
         if (minCapacity - elementData.length > 0)
+            // 需要的最小容量超出数组长度，进行扩容
             grow(minCapacity);
     }
 
@@ -248,6 +251,8 @@ public class ArrayList<E> extends AbstractList<E>
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     /**
+     * 一般的扩容就是将容量增长一半
+     *
      * Increases the capacity to ensure that it can hold at least the
      * number of elements specified by the minimum capacity argument.
      *
@@ -256,10 +261,13 @@ public class ArrayList<E> extends AbstractList<E>
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
+        // newCapacity 等于 oldCapacity + oldCapacity / 2，也就是比旧的容量增长一半
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         if (newCapacity - minCapacity < 0)
+            // 新容量仍无法满足最小容量，则将最小容量作为新的容量
             newCapacity = minCapacity;
         if (newCapacity - MAX_ARRAY_SIZE > 0)
+            // 需要的容量大于最大的数组容量，采用 hugeCapacity 返回最大值
             newCapacity = hugeCapacity(minCapacity);
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
@@ -459,7 +467,9 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
     public boolean add(E e) {
+        // 确保容量
         ensureCapacityInternal(size + 1);  // Increments modCount!!
+        // 将元素插入数组
         elementData[size++] = e;
         return true;
     }

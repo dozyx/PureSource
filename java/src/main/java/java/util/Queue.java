@@ -36,6 +36,27 @@
 package java.util;
 
 /**
+ * 理解：通常讲到队列，都会想到 FIFO，但是 Queue 并不要求其实现遵循 FIFO。Queue 应该理解成一个线性结构
+ * （一开始想要理解成一个双端结构，但考虑到一些实现，插入也不一定是在 tail 端，比如 LinkedList，所以感觉也不准确）
+ * Queue 接口定义了插入、移除、检查的方法，我们可以确定的是移除和检查操作的都是 head 的元素，但是添加的位置和添加之后元素的排序都是
+ * 没有要求的。
+ *
+ * 除了基本的 {@link java.util.Collection Collection} 操作，队列
+ * 提供了另外的插入、取出、检查操作。这些方法以两种形式存在：一种在失败时抛出异常，
+ * 另一种返回特殊值（如 null 或者 false）。插入操作的第二种形式一般用于 capacity-restricted 队列。
+ *
+ * 插入：add、offer。add 在无法添加元素时抛出异常，offer 的设计是为了将失败作为一种普通的情况处理而非异常，比如一个固定容量的队列
+ * 移除：remove、poll。当队列为空时才有区别，一个抛出异常，一个返回 null。
+ * 检查：element、peek。element 在队列为空时抛出异常
+ *
+ * 队列通常会遵循 FIFO 原则，但这不是必要的。
+ * 例外的情况比如，
+ * 优先级队列基于提供的 comparator 排序，或者按自然顺序、LIFO 队列（或者栈）的顺序是 LIFO。
+ * 无论使用什么样的排序，队列的 head 指的是在调用 remove() 或者 poll() 时被移除的元素。
+ * 所有的队列实现都必须指定它的排序特性。
+ *
+ * 即使有些队列实现允许插入 null 元素，也不应该插入 null，因为 null 是 poll 方法返回的特殊值以表示队列没有元素。
+ *
  * A collection designed for holding elements prior to processing.
  * Besides basic {@link java.util.Collection Collection} operations,
  * queues provide additional insertion, extraction, and inspection
@@ -191,6 +212,8 @@ public interface Queue<E> extends Collection<E> {
     E remove();
 
     /**
+     * 从队列头获取一个元素，并将该元素移除。
+     *
      * Retrieves and removes the head of this queue,
      * or returns {@code null} if this queue is empty.
      *
@@ -209,6 +232,8 @@ public interface Queue<E> extends Collection<E> {
     E element();
 
     /**
+     * 从队列头获取一个元素，但不移除。
+     *
      * Retrieves, but does not remove, the head of this queue,
      * or returns {@code null} if this queue is empty.
      *

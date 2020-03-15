@@ -199,6 +199,9 @@ public interface BlockingQueue<E> extends Queue<E> {
     boolean add(E e);
 
     /**
+     * 如果没有违反容量限制，立即将元素插入队列中，成功返回 true，空间不足失败返回 false。
+     * 在使用有容量限制的队列时，更偏向于使用这个方法，因为 add 方法插入失败会直接抛出异常。
+     *
      * Inserts the specified element into this queue if it is possible to do
      * so immediately without violating capacity restrictions, returning
      * {@code true} upon success and {@code false} if no space is currently
