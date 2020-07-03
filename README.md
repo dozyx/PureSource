@@ -16,6 +16,7 @@
 * SwipeRefreshLayout 1.0.0
 * SmartRefreshLayout 1.1.0
 * Java 1.8 (jdk1.8.0_241.jdk)
+* coordinatorlayout 1.1.0
 
 
 ### 源码导入

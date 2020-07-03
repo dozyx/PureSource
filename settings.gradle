@@ -4,7 +4,7 @@ include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava',
         ':fragmentation:fragmentation', ':fragmentation:eventbus_activity_scope',
         ':sticky_headers_recyclerview',':gson',
         ':eventbus:EventBus', ':eventbus:EventBusAnnotationProcessor',
-        ':swiperefreshlayout'
+        ':swiperefreshlayout', ':coordinatorlayout'
 include ':SmartRefreshLayout:refresh-layout', ':SmartRefreshLayout:refresh-header', ':SmartRefreshLayout:refresh-footer'
 rootProject.name = 'PureSource'
 include ':java'
