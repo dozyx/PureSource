@@ -2412,16 +2412,23 @@
     <declare-styleable name="AppBarLayout_Layout">
     <attr name="layout_scrollFlags">
       <!-- Disable scrolling on the view. This flag should not be combined with any of the other
-           scroll flags. -->
+           scroll flags.
+
+           禁止 view 的滑动，这个 flag 不应该与其他 scroll flag 一起使用-->
       <flag name="noScroll" value="0x0"/>
 
       <!-- The view will be scroll in direct relation to scroll events. This flag needs to be
            set for any of the other flags to take effect. If any sibling views
-           before this one do not have this flag, then this value has no effect. -->
+           before this one do not have this flag, then this value has no effect.
+
+           view 将与滑动事件产生直接的滑动。其他 flag 需要设置这个 flag 才能生效，如果在它前面的其他同级的 view 没有设置这个 flag，那么这个值也会无效-->
       <flag name="scroll" value="0x1"/>
 
       <!-- When exiting (scrolling off screen) the view will be scrolled until it is
-           'collapsed'. The collapsed height is defined by the view's minimum height. -->
+           'collapsed'. The collapsed height is defined by the view's minimum height.
+
+           当这个 view 变成了 'collapsed' 状态时，开始滑动？
+           -->
       <flag name="exitUntilCollapsed" value="0x2"/>
 
       <!-- When entering (scrolling on screen) the view will scroll on any downwards

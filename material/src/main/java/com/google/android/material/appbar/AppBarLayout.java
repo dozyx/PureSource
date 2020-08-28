@@ -70,6 +70,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * vertical 的 LinearLayout
+ * 子类通过 {@link LayoutParams#setScrollFlags(int)} 指定它们的滑动行为
+ * AppBarLayout 一般需要作为 {@link CoordinatorLayout} 的直接子类使用，否则，大部分行为会无效
+ *
+ * AppBarLayout 还需要有一个可滑动的同级 View 来明确什么时候触发了滚动，它们之间的联系通过 {@link ScrollingViewBehavior} 来实现，
+ * 这意味着需要为该滑动的 View 指定 {@link ScrollingViewBehavior}。
+ *
  * AppBarLayout is a vertical {@link LinearLayout} which implements many of the features of material
  * designs app bar concept, namely scrolling gestures.
  *
@@ -150,6 +157,8 @@ public class AppBarLayout extends LinearLayout {
   }
 
   /**
+   * 当 AppBarLayout 的垂直偏移量发生改变时回调
+   *
    * Interface definition for a callback to be invoked when an {@link AppBarLayout}'s vertical
    * offset changes.
    */
@@ -1020,6 +1029,9 @@ public class AppBarLayout extends LinearLayout {
     public static final int SCROLL_FLAG_SCROLL = 0x1;
 
     /**
+     * 正在滑出屏幕的 view 会滑动直到变为 "collapsed" 状态
+     * collapsed 时的高度由最小高度决定
+     *
      * When exiting (scrolling off screen) the view will be scrolled until it is 'collapsed'. The
      * collapsed height is defined by the view's minimum height.
      *
@@ -1876,6 +1888,8 @@ public class AppBarLayout extends LinearLayout {
   }
 
   /**
+   * 用于 AppBarLayout 的一个可垂直滑动的同级 view
+   *
    * Behavior which should be used by {@link View}s which can scroll vertically and support nested
    * scrolling to automatically scroll any {@link AppBarLayout} siblings.
    */
@@ -1896,6 +1910,7 @@ public class AppBarLayout extends LinearLayout {
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
       // We depend on any AppBarLayouts
+      // 以同级的 AppBarLayout 作为依赖
       return dependency instanceof AppBarLayout;
     }
 

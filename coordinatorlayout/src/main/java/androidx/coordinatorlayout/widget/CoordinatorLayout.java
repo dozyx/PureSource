@@ -466,9 +466,11 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         final int action = ev.getActionMasked();
 
         final List<View> topmostChildList = mTempList1;
+        // 以 z 序得到一个 view 的列表
         getTopSortedChildren(topmostChildList);
 
         // Let topmost child views inspect first
+        // topmost 的 view 将可以先决定是否拦截（不管是否为点击所在的 view）
         final int childCount = topmostChildList.size();
         for (int i = 0; i < childCount; i++) {
             final View child = topmostChildList.get(i);
@@ -2103,6 +2105,9 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * Behavior 关联到 LayoutParams 实例时回调
+         * 会在 LayoutParams 初始化完成和被修改时调用
+         *
          * Called when the Behavior has been attached to a LayoutParams instance.
          *
          * <p>This will be called after the LayoutParams has been instantiated and can be
@@ -2114,6 +2119,9 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * LayoutParams 实例中取消与该 Behavior 的关联时回调
+         * 只会在 LayoutParams 实例显式调用 {@link LayoutParams#setBehavior(Behavior)} 时回调
+         *
          * Called when the Behavior has been detached from its holding LayoutParams instance.
          *
          * <p>This will only be called if the Behavior has been explicitly removed from the
@@ -2124,6 +2132,9 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * 在 CoordinatorLayout 的触摸事件分发给子 view 之前响应
+         * 思考：CoordinatorLayout 的多个子 View 有 behavior，分发顺序是怎么样的
+         *
          * Respond to CoordinatorLayout touch events before they are dispatched to child views.
          *
          * <p>Behaviors can use this to monitor inbound touch events until one decides to
@@ -2152,6 +2163,10 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * Behavior 拦截触摸事件之后进行处理
+         * Behavior 可能会拦截触摸事件来帮助 CoordinatorLayout 管理它的子 view
+         * 即使关联此 behavior 的 view 是不可见的，这个方法依然可能回调
+         *
          * Respond to CoordinatorLayout touch events after this Behavior has started
          * {@link #onInterceptTouchEvent intercepting} them.
          *
@@ -2176,6 +2191,9 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * 提供一个将用于绘制在关联子 view 后面的 scrim color（玻璃颜色），不是很理解
+         * scrim 用于表示在它之下的元素正处于不可交互或响应的状态，这样可以使用户关注到 scrim 之上的其它 view
+         *
          * Supply a scrim color that will be painted behind the associated child view.
          *
          * <p>A scrim may be used to indicate that the other elements beneath it are not currently
@@ -2230,6 +2248,12 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * 表明 behavior 关联的 view 是否以另一个同级的 view 作为 layout dependency
+         * 这个方法在处理 layout 请求时至少回调一次
+         *
+         * 如果返回 true，父 CoordinatorLayout 将：
+         * 在 dependent child 放置好之后才放置这个 view；当 dependent view 的 layout 或者 position 改变时，回调 onDependentViewChanged
+         *
          * Determine whether the supplied child view has another specific sibling view as a
          * layout dependency.
          *
@@ -2257,6 +2281,8 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * 响应该 view 的 dependent view 的变化
+         *
          * Respond to a change in a child's dependent view
          *
          * <p>This method is called whenever a dependent view changes in size or position outside
@@ -2305,6 +2331,8 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * 当 CoordinatorLayout 将要测量某个子 view 时回调
+         *
          * Called when the parent CoordinatorLayout is about to measure the given child view.
          *
          * <p>This method can be used to perform custom or modified measurement of a child view
@@ -2399,6 +2427,8 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
         }
 
         /**
+         * 当 CoordinatorLayout 的一个 descendant 将要初始化一个一个 nested scroll 时回调
+         *
          * Called when a descendant of the CoordinatorLayout attempts to initiate a nested scroll.
          *
          * <p>Any Behavior associated with any direct child of the CoordinatorLayout may respond
@@ -2411,6 +2441,7 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
          * @param child the child view of the CoordinatorLayout this Behavior is associated with
          * @param directTargetChild the child view of the CoordinatorLayout that either is or
          *                          contains the target of the nested scroll operation
+         *                          为嵌套滑动的 view 或包含嵌套滑动的 view 的 view
          * @param target the descendant view of the CoordinatorLayout initiating the nested scroll
          * @param axes the axes that this nested scroll applies to. See
          *                         {@link ViewCompat#SCROLL_AXIS_HORIZONTAL},

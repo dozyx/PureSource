@@ -3858,7 +3858,9 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
      */
     private void dispatchLayoutStep1() {
         // 该方法只在 STEP_START 时调用
+        // 断言状态为 STEP_START
         mState.assertLayoutStep(State.STEP_START);
+        // 保存要继续滚动的距离
         fillRemainingScrollValues(mState);
         mState.mIsMeasuring = false;
         startInterceptRequestLayout();

@@ -61,6 +61,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * 作为 Toolbar 的一个封装（wrapper），可以实现 app bar 的 collapsing 功能
+ * 需要作为 AppBarLayout 的直接子 view
+ *
  * CollapsingToolbarLayout is a wrapper for {@link Toolbar} which implements a collapsing app bar.
  * It is designed to be used as a direct child of a {@link AppBarLayout}. CollapsingToolbarLayout
  * contains the following features:
@@ -107,16 +110,24 @@ import java.lang.annotation.RetentionPolicy;
  * @attr ref com.google.android.material.R.styleable#CollapsingToolbarLayout_expandedTitleMarginEnd
  * @attr ref com.google.android.material.R.styleable#CollapsingToolbarLayout_expandedTitleMarginBottom
  * @attr ref com.google.android.material.R.styleable#CollapsingToolbarLayout_statusBarScrim
- * @attr ref com.google.android.material.R.styleable#CollapsingToolbarLayout_toolbarId
+ * @attr ref com.google.android.material.R.styleable#CollapsingToolbarLayout_toolbarId 指定 toolbar 的 Id
  */
 public class CollapsingToolbarLayout extends FrameLayout {
 
   private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;
 
-  private boolean refreshToolbar = true;
+  private boolean refreshToolbar = true;// 是否刷新 toolbar
   private int toolbarId;
   @Nullable private Toolbar toolbar;
+  /**
+   * CollapsingToolbarLayout 中包含 Toolbar 的直接子 view，如果没有，那么就是 Toolbar 本身。
+   * 如果没有设置 Toolbar 的 Id，这个会是 null，因为没有提供 Id 是，Toolbar 默认是在直接子 view 里
+   */
   @Nullable private View toolbarDirectChild;
+  /**
+   * dummy 假
+   * 会添加到 Toolbar 中，宽高都是 match_parent
+   */
   private View dummyView;
 
   private int expandedMarginStart;
@@ -126,7 +137,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
   private final Rect tmpRect = new Rect();
   @NonNull final CollapsingTextHelper collapsingTextHelper;
-  private boolean collapsingTitleEnabled;
+  private boolean collapsingTitleEnabled;// 是否显示标题
   private boolean drawCollapsingTitle;
 
   @Nullable private Drawable contentScrim;
@@ -139,7 +150,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
   private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener;
 
-  int currentOffset;
+  int currentOffset;// AppBarLayout 产生的垂直方向的偏移量
 
   @Nullable WindowInsetsCompat lastInsets;
 
@@ -345,6 +356,9 @@ public class CollapsingToolbarLayout extends FrameLayout {
     }
   }
 
+  /**
+   * 找到 toolbar，如果有标题，会给它添加一个 dummyView
+   */
   private void ensureToolbar() {
     if (!refreshToolbar) {
       return;
@@ -363,6 +377,8 @@ public class CollapsingToolbarLayout extends FrameLayout {
     }
 
     if (this.toolbar == null) {
+      // 如果没有 ID，则遍历所有的子 view，找到 Toolbar
+      // 这里只遍历了直接子 view
       // If we don't have an ID, or couldn't find a Toolbar with the correct ID, try and find
       // one from our direct children
       Toolbar toolbar = null;
@@ -386,7 +402,10 @@ public class CollapsingToolbarLayout extends FrameLayout {
         : child == toolbarDirectChild;
   }
 
-  /** Returns the direct child of this layout, which itself is the ancestor of the given view. */
+  /**
+   * 返回 CollapsingToolbarLayout 里包含 Toolbar 的直接子 view
+   * Returns the direct child of this layout, which itself is the ancestor of the given view.
+   */
   @NonNull
   private View findDirectChild(@NonNull final View descendant) {
     View directChild = descendant;
@@ -400,6 +419,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
   private void updateDummyView() {
     if (!collapsingTitleEnabled && dummyView != null) {
+      // 禁用了标题，但 dummyView 存在，那么移除它
       // If we have a dummy view and we have our title disabled, remove it from its parent
       final ViewParent parent = dummyView.getParent();
       if (parent instanceof ViewGroup) {
@@ -407,6 +427,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
       }
     }
     if (collapsingTitleEnabled && toolbar != null) {
+      // 添加一个 dummyView 到 toolbar 中
       if (dummyView == null) {
         dummyView = new View(getContext());
       }
@@ -460,6 +481,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
     if (collapsingTitleEnabled && dummyView != null) {
       // We only draw the title if the dummy view is being displayed (Toolbar removes
       // views if there is no space)
+      // dummyView attach 到 Toolbar，并且可见的情况下才绘制标题
       drawCollapsingTitle =
           ViewCompat.isAttachedToWindow(dummyView) && dummyView.getVisibility() == VISIBLE;
 
@@ -492,11 +514,14 @@ public class CollapsingToolbarLayout extends FrameLayout {
     if (toolbar != null) {
       if (collapsingTitleEnabled && TextUtils.isEmpty(collapsingTextHelper.getText())) {
         // If we do not currently have a title, try and grab it from the Toolbar
+        // 如果 CollapsingToolbarLayout 没有标题，那么尝试从 toolbar 中获取
         setTitle(toolbar.getTitle());
       }
       if (toolbarDirectChild == null || toolbarDirectChild == this) {
+        // 使用 toolbar 的高度作为 CollapsingToolbarLayout 的最小高度
         setMinimumHeight(getHeightWithMargins(toolbar));
       } else {
+        // 使用 toolbar 所在的 CollapsingToolbarLayout 的直接子 view 作为最小高度
         setMinimumHeight(getHeightWithMargins(toolbarDirectChild));
       }
     }
@@ -1240,6 +1265,8 @@ public class CollapsingToolbarLayout extends FrameLayout {
   final int getMaxOffsetForPinChild(@NonNull View child) {
     final ViewOffsetHelper offsetHelper = getViewOffsetHelper(child);
     final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+    // pin child 的最大偏移量：CollapsingToolbarLayout 的高度 - offset 的 view 的 top 位置 - offset 的 view 的高度 - offset 的 view 的 bottomMargin
+    // 也就是，
     return getHeight() - offsetHelper.getLayoutTop() - child.getHeight() - lp.bottomMargin;
   }
 
@@ -1264,6 +1291,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
         switch (lp.collapseMode) {
           case LayoutParams.COLLAPSE_MODE_PIN:
+            // MathUtils.clamp 确保值在区间内
             offsetHelper.setTopAndBottomOffset(
                 MathUtils.clamp(-verticalOffset, 0, getMaxOffsetForPinChild(child)));
             break;

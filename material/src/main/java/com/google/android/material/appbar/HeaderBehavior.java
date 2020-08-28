@@ -64,6 +64,7 @@ abstract class HeaderBehavior<V extends View> extends ViewOffsetBehavior<V> {
 
     // Shortcut since we're being dragged
     if (action == MotionEvent.ACTION_MOVE && isBeingDragged) {
+      // 正在滑动中，直接返回 true
       return true;
     }
 
@@ -73,6 +74,7 @@ abstract class HeaderBehavior<V extends View> extends ViewOffsetBehavior<V> {
           isBeingDragged = false;
           final int x = (int) ev.getX();
           final int y = (int) ev.getY();
+          // child 是 behavior 关联的 view
           if (canDragView(child) && parent.isPointInChildBounds(child, x, y)) {
             lastMotionY = y;
             this.activePointerId = ev.getPointerId(0);
@@ -281,7 +283,10 @@ abstract class HeaderBehavior<V extends View> extends ViewOffsetBehavior<V> {
     // no-op
   }
 
-  /** Return true if the view can be dragged. */
+  /**
+   * 如果 behavior 关联的 view 可以拖动，返回 true
+   * Return true if the view can be dragged.
+   */
   boolean canDragView(V view) {
     return false;
   }

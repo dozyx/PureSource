@@ -20,6 +20,8 @@ import androidx.core.view.ViewCompat;
 import android.view.View;
 
 /**
+ * 用于使用 offsetXXX 方法移动 view 的工具类
+ *
  * Utility helper for moving a {@link View} around using {@link View#offsetLeftAndRight(int)} and
  * {@link View#offsetTopAndBottom(int)}.
  *
@@ -30,8 +32,8 @@ class ViewOffsetHelper {
 
   private final View view;
 
-  private int layoutTop;
-  private int layoutLeft;
+  private int layoutTop;// 原始的 top 位置
+  private int layoutLeft;// 原始的 left 位置
   private int offsetTop;
   private int offsetLeft;
   private boolean verticalOffsetEnabled = true;
@@ -53,6 +55,8 @@ class ViewOffsetHelper {
   }
 
   /**
+   * 应用偏移
+   *
    * Set the top and bottom offset for this {@link ViewOffsetHelper}'s view.
    *
    * @param offset the offset in px.
