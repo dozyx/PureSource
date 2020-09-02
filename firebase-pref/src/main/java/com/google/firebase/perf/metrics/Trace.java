@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.gms.common.util.VisibleForTesting;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbp;
 import com.google.android.gms.internal.p000firebaseperf.zzbq;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.firebase.perf.internal.GaugeManager;
 import com.google.firebase.perf.internal.SessionManager;
 import com.google.firebase.perf.internal.zza;
@@ -36,7 +36,7 @@ public class Trace extends zzb implements Parcelable, zzx {
     @VisibleForTesting
     private static final Parcelable.Creator<Trace> zzgm = new zzc();
     private final String name;
-    private zzbn zzai;
+    private LogUtil zzai;
     private final List<zzt> zzcp;
     private final GaugeManager zzcq;
     private final WeakReference<zzx> zzcv;
@@ -46,12 +46,12 @@ public class Trace extends zzb implements Parcelable, zzx {
     private final Map<String, zzb> zzgh;
     private final zzbp zzgi;
     private final Map<String, String> zzgj;
-    private zzcb zzgk;
-    private zzcb zzgl;
+    private TimeTracker zzgk;
+    private TimeTracker zzgl;
 
     public final void zza(zzt zzt) {
         if (zzt == null) {
-            this.zzai.zzn("Unable to add new SessionId to the Trace. Continuing without it.");
+            this.zzai.i("Unable to add new SessionId to the Trace. Continuing without it.");
         } else if (hasStarted() && !isStopped()) {
             this.zzcp.add(zzt);
         }
@@ -82,7 +82,7 @@ public class Trace extends zzb implements Parcelable, zzx {
         this.zzde = zzf;
         this.zzcp = new ArrayList();
         this.zzcq = gaugeManager;
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
     }
 
     /* JADX INFO: super call moved to the top of the method (can break code semantics) */
@@ -96,8 +96,8 @@ public class Trace extends zzb implements Parcelable, zzx {
         this.zzgh = new ConcurrentHashMap();
         this.zzgj = new ConcurrentHashMap();
         parcel.readMap(this.zzgh, zzb.class.getClassLoader());
-        this.zzgk = (zzcb) parcel.readParcelable(zzcb.class.getClassLoader());
-        this.zzgl = (zzcb) parcel.readParcelable(zzcb.class.getClassLoader());
+        this.zzgk = (TimeTracker) parcel.readParcelable(TimeTracker.class.getClassLoader());
+        this.zzgl = (TimeTracker) parcel.readParcelable(TimeTracker.class.getClassLoader());
         this.zzcp = new ArrayList();
         parcel.readList(this.zzcp, zzt.class.getClassLoader());
         if (z) {
@@ -114,8 +114,8 @@ public class Trace extends zzb implements Parcelable, zzx {
     @Keep
     public void start() {
         String str;
-        if (!zzal.zzn().zzo()) {
-            this.zzai.zzn("Trace feature is disabled.");
+        if (!zzal.getInstance().zzo()) {
+            this.zzai.i("Trace feature is disabled.");
             return;
         }
         String str2 = this.name;
@@ -142,14 +142,14 @@ public class Trace extends zzb implements Parcelable, zzx {
             str = null;
         }
         if (str != null) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Cannot start trace '%s'. Trace name is invalid.(%s)", new Object[]{this.name, str}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Cannot start trace '%s'. Trace name is invalid.(%s)", new Object[]{this.name, str}));
         } else if (this.zzgk != null) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Trace '%s' has already started, should not start again!", new Object[]{this.name}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Trace '%s' has already started, should not start again!", new Object[]{this.name}));
         } else {
-            this.zzgk = new zzcb();
+            this.zzgk = new TimeTracker();
             zzbr();
-            zzt zzcp2 = SessionManager.zzco().zzcp();
-            SessionManager.zzco().zzc(this.zzcv);
+            zzt zzcp2 = SessionManager.getInstance().zzcp();
+            SessionManager.getInstance().zzc(this.zzcv);
             zza(zzcp2);
             if (zzcp2.zzci()) {
                 this.zzcq.zzj(zzcp2.zzch());
@@ -160,15 +160,15 @@ public class Trace extends zzb implements Parcelable, zzx {
     @Keep
     public void stop() {
         if (!hasStarted()) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Trace '%s' has not been started so unable to stop!", new Object[]{this.name}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Trace '%s' has not been started so unable to stop!", new Object[]{this.name}));
         } else if (isStopped()) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Trace '%s' has already stopped, should not stop again!", new Object[]{this.name}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Trace '%s' has already stopped, should not stop again!", new Object[]{this.name}));
         } else {
-            SessionManager.zzco().zzd(this.zzcv);
+            SessionManager.getInstance().zzd(this.zzcv);
             zzbs();
-            this.zzgl = new zzcb();
+            this.zzgl = new TimeTracker();
             if (this.zzgf == null) {
-                zzcb zzcb = this.zzgl;
+                TimeTracker zzcb = this.zzgl;
                 if (!this.zzgg.isEmpty()) {
                     Trace trace = this.zzgg.get(this.zzgg.size() - 1);
                     if (trace.zzgl == null) {
@@ -176,11 +176,11 @@ public class Trace extends zzb implements Parcelable, zzx {
                     }
                 }
                 if (this.name.isEmpty()) {
-                    this.zzai.zzp("Trace name is empty, no log is sent to server");
+                    this.zzai.e("Trace name is empty, no log is sent to server");
                 } else if (this.zzde != null) {
                     this.zzde.zza(new zze(this).zzcz(), zzbj());
-                    if (SessionManager.zzco().zzcp().zzci()) {
-                        this.zzcq.zzj(SessionManager.zzco().zzcp().zzch());
+                    if (SessionManager.getInstance().zzcp().zzci()) {
+                        this.zzcq.zzj(SessionManager.getInstance().zzcp().zzch());
                     }
                 }
             }
@@ -202,15 +202,15 @@ public class Trace extends zzb implements Parcelable, zzx {
     public void incrementMetric(@NonNull String str, long j) {
         String zzk = zzq.zzk(str);
         if (zzk != null) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Cannot increment metric '%s'. Metric name is invalid.(%s)", new Object[]{str, zzk}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Cannot increment metric '%s'. Metric name is invalid.(%s)", new Object[]{str, zzk}));
         } else if (!hasStarted()) {
-            this.zzai.zzo(String.format(Locale.ENGLISH, "Cannot increment metric '%s' for trace '%s' because it's not started", new Object[]{str, this.name}));
+            this.zzai.w(String.format(Locale.ENGLISH, "Cannot increment metric '%s' for trace '%s' because it's not started", new Object[]{str, this.name}));
         } else if (isStopped()) {
-            this.zzai.zzo(String.format(Locale.ENGLISH, "Cannot increment metric '%s' for trace '%s' because it's been stopped", new Object[]{str, this.name}));
+            this.zzai.w(String.format(Locale.ENGLISH, "Cannot increment metric '%s' for trace '%s' because it's been stopped", new Object[]{str, this.name}));
         } else {
             zzb zzr = zzr(str.trim());
             zzr.zzr(j);
-            this.zzai.zzm(String.format(Locale.ENGLISH, "Incrementing metric '%s' to %d on trace '%s'", new Object[]{str, Long.valueOf(zzr.getCount()), this.name}));
+            this.zzai.d(String.format(Locale.ENGLISH, "Incrementing metric '%s' to %d on trace '%s'", new Object[]{str, Long.valueOf(zzr.getCount()), this.name}));
         }
     }
 
@@ -230,14 +230,14 @@ public class Trace extends zzb implements Parcelable, zzx {
     public void putMetric(@NonNull String str, long j) {
         String zzk = zzq.zzk(str);
         if (zzk != null) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Cannot set value for metric '%s'. Metric name is invalid.(%s)", new Object[]{str, zzk}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Cannot set value for metric '%s'. Metric name is invalid.(%s)", new Object[]{str, zzk}));
         } else if (!hasStarted()) {
-            this.zzai.zzo(String.format(Locale.ENGLISH, "Cannot set value for metric '%s' for trace '%s' because it's not started", new Object[]{str, this.name}));
+            this.zzai.w(String.format(Locale.ENGLISH, "Cannot set value for metric '%s' for trace '%s' because it's not started", new Object[]{str, this.name}));
         } else if (isStopped()) {
-            this.zzai.zzo(String.format(Locale.ENGLISH, "Cannot set value for metric '%s' for trace '%s' because it's been stopped", new Object[]{str, this.name}));
+            this.zzai.w(String.format(Locale.ENGLISH, "Cannot set value for metric '%s' for trace '%s' because it's been stopped", new Object[]{str, this.name}));
         } else {
             zzr(str.trim()).zzs(j);
-            this.zzai.zzm(String.format(Locale.ENGLISH, "Setting metric '%s' to '%s' on trace '%s'", new Object[]{str, Long.valueOf(j), this.name}));
+            this.zzai.d(String.format(Locale.ENGLISH, "Setting metric '%s' to '%s' on trace '%s'", new Object[]{str, Long.valueOf(j), this.name}));
         }
     }
 
@@ -249,7 +249,7 @@ public class Trace extends zzb implements Parcelable, zzx {
                 z = false;
             }
             if (z) {
-                this.zzai.zzo(String.format(Locale.ENGLISH, "Trace '%s' is started but not stopped when it is destructed!", new Object[]{this.name}));
+                this.zzai.w(String.format(Locale.ENGLISH, "Trace '%s' is started but not stopped when it is destructed!", new Object[]{this.name}));
                 zzc(1);
             }
         } finally {
@@ -273,13 +273,13 @@ public class Trace extends zzb implements Parcelable, zzx {
 
     /* access modifiers changed from: package-private */
     @VisibleForTesting
-    public final zzcb zzcv() {
+    public final TimeTracker zzcv() {
         return this.zzgk;
     }
 
     /* access modifiers changed from: package-private */
     @VisibleForTesting
-    public final zzcb zzcw() {
+    public final TimeTracker zzcw() {
         return this.zzgl;
     }
 
@@ -324,7 +324,7 @@ public class Trace extends zzb implements Parcelable, zzx {
                 if (zza != null) {
                     throw new IllegalArgumentException(zza);
                 }
-                this.zzai.zzm(String.format(Locale.ENGLISH, "Setting attribute '%s' to '%s' on trace '%s'", new Object[]{str, str2, this.name}));
+                this.zzai.d(String.format(Locale.ENGLISH, "Setting attribute '%s' to '%s' on trace '%s'", new Object[]{str, str2, this.name}));
                 z = true;
                 if (z) {
                     this.zzgj.put(str, str2);
@@ -333,7 +333,7 @@ public class Trace extends zzb implements Parcelable, zzx {
                 throw new IllegalArgumentException(String.format(Locale.ENGLISH, "Exceeds max limit of number of attributes - %d", new Object[]{5}));
             }
         } catch (Exception e) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Can not set attribute '%s' with value '%s' (%s)", new Object[]{str, str2, e.getMessage()}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Can not set attribute '%s' with value '%s' (%s)", new Object[]{str, str2, e.getMessage()}));
             z = false;
         }
     }
@@ -341,7 +341,7 @@ public class Trace extends zzb implements Parcelable, zzx {
     @Keep
     public void removeAttribute(@NonNull String str) {
         if (isStopped()) {
-            this.zzai.zzp("Can't remove a attribute from a Trace that's stopped.");
+            this.zzai.e("Can't remove a attribute from a Trace that's stopped.");
         } else {
             this.zzgj.remove(str);
         }

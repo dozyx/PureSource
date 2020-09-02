@@ -2,14 +2,14 @@ package com.google.firebase.perf.internal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzdr;
 import java.util.Iterator;
 import java.util.Map;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 final class zzm extends zzq {
-    private zzbn zzai = zzbn.zzcn();
+    private LogUtil zzai = LogUtil.getInstance();
     private zzdr zzeh;
 
     zzm(@NonNull zzdr zzdr) {
@@ -21,14 +21,14 @@ final class zzm extends zzq {
         boolean z2;
         String str;
         if (!zzb(this.zzeh, 0)) {
-            zzbn zzbn = this.zzai;
+            LogUtil zzbn = this.zzai;
             String valueOf = String.valueOf(this.zzeh.getName());
             if (valueOf.length() != 0) {
                 str = "Invalid Trace:".concat(valueOf);
             } else {
                 str = new String("Invalid Trace:");
             }
-            zzbn.zzo(str);
+            zzbn.w(str);
             return false;
         }
         zzdr zzdr = this.zzeh;
@@ -57,9 +57,9 @@ final class zzm extends zzq {
         if (!z || zza(this.zzeh, 0)) {
             return true;
         }
-        zzbn zzbn2 = this.zzai;
+        LogUtil zzbn2 = this.zzai;
         String valueOf2 = String.valueOf(this.zzeh.getName());
-        zzbn2.zzo(valueOf2.length() != 0 ? "Invalid Counters for Trace:".concat(valueOf2) : new String("Invalid Counters for Trace:"));
+        zzbn2.w(valueOf2.length() != 0 ? "Invalid Counters for Trace:".concat(valueOf2) : new String("Invalid Counters for Trace:"));
         return false;
     }
 
@@ -70,7 +70,7 @@ final class zzm extends zzq {
             return false;
         }
         if (i > 1) {
-            this.zzai.zzo("Exceed MAX_SUBTRACE_DEEP:1");
+            this.zzai.w("Exceed MAX_SUBTRACE_DEEP:1");
             return false;
         }
         for (Map.Entry next : zzdr.zzft().entrySet()) {
@@ -80,19 +80,19 @@ final class zzm extends zzq {
             } else {
                 String trim = str.trim();
                 if (trim.isEmpty()) {
-                    this.zzai.zzo("counterId is empty");
+                    this.zzai.w("counterId is empty");
                     z = false;
                 } else if (trim.length() > 100) {
-                    this.zzai.zzo("counterId exceeded max length 100");
+                    this.zzai.w("counterId exceeded max length 100");
                     z = false;
                 } else {
                     z = true;
                 }
             }
             if (!z) {
-                zzbn zzbn = this.zzai;
+                LogUtil zzbn = this.zzai;
                 String valueOf = String.valueOf((String) next.getKey());
-                zzbn.zzo(valueOf.length() != 0 ? "invalid CounterId:".concat(valueOf) : new String("invalid CounterId:"));
+                zzbn.w(valueOf.length() != 0 ? "invalid CounterId:".concat(valueOf) : new String("invalid CounterId:"));
                 return false;
             }
             if (((Long) next.getValue()) != null) {
@@ -103,9 +103,9 @@ final class zzm extends zzq {
                 continue;
             }
             if (!z2) {
-                zzbn zzbn2 = this.zzai;
+                LogUtil zzbn2 = this.zzai;
                 String valueOf2 = String.valueOf(next.getValue());
-                zzbn2.zzo(new StringBuilder(String.valueOf(valueOf2).length() + 21).append("invalid CounterValue:").append(valueOf2).toString());
+                zzbn2.w(new StringBuilder(String.valueOf(valueOf2).length() + 21).append("invalid CounterValue:").append(valueOf2).toString());
                 return false;
             }
         }

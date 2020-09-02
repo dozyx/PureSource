@@ -42,7 +42,7 @@ public final class zzbh {
         return zzbm;
     }
 
-    public final void zza(long j, zzcb zzcb) {
+    public final void zza(long j, TimeTracker zzcb) {
         if (this.zzbq != -1 && this.zzbq != 0 && !zzi(j)) {
             if (this.zzbn == null) {
                 zzb(j, zzcb);
@@ -61,34 +61,34 @@ public final class zzbh {
         }
     }
 
-    public final void zza(zzcb zzcb) {
+    public final void zza(TimeTracker zzcb) {
         zzb(zzcb);
     }
 
-    private final synchronized void zzb(long j, zzcb zzcb) {
+    private final synchronized void zzb(long j, TimeTracker zzcb) {
         String str;
         this.zzbp = j;
         try {
             this.zzbn = this.zzbo.scheduleAtFixedRate(new zzbg(this, zzcb), 0, j, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException e) {
-            zzbn zzbn2 = null;
+            LogUtil zzbn2 = null;
             String valueOf = String.valueOf(e.getMessage());
             if (valueOf.length() != 0) {
                 str = "Unable to start collecting Cpu Metrics: ".concat(valueOf);
             } else {
                 str = new String("Unable to start collecting Cpu Metrics: ");
             }
-            zzbn2.zzo(str);
+            zzbn2.w(str);
         }
     }
 
-    private final synchronized void zzb(zzcb zzcb) {
+    private final synchronized void zzb(TimeTracker zzcb) {
         try {
             this.zzbo.schedule(new zzbj(this, zzcb), 0, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException e) {
-            zzbn zzbn2 = null;
+            LogUtil zzbn2 = null;
             String valueOf = String.valueOf(e.getMessage());
-            zzbn2.zzo(valueOf.length() != 0 ? "Unable to collect Cpu Metric: ".concat(valueOf) : new String("Unable to collect Cpu Metric: "));
+            zzbn2.w(valueOf.length() != 0 ? "Unable to collect Cpu Metric: ".concat(valueOf) : new String("Unable to collect Cpu Metric: "));
         }
     }
 
@@ -98,7 +98,7 @@ public final class zzbh {
     /* JADX WARNING: Multi-variable type inference failed */
     @androidx.annotation.Nullable
     /* Code decompiled incorrectly, please refer to instructions dump. */
-    private final com.google.android.gms.internal.p000firebaseperf.zzcp zzc(com.google.android.gms.internal.p000firebaseperf.zzcb r15) {
+    private final com.google.android.gms.internal.p000firebaseperf.zzcp zzc(TimeTracker r15) {
         /*
             r14 = this;
             r1 = 0
@@ -202,7 +202,7 @@ public final class zzbh {
     }
 
     /* access modifiers changed from: package-private */
-    public final /* synthetic */ void zzd(zzcb zzcb) {
+    public final /* synthetic */ void zzd(TimeTracker zzcb) {
         zzcp zzc = zzc(zzcb);
         if (zzc != null) {
             this.zzbs.add(zzc);
@@ -210,7 +210,7 @@ public final class zzbh {
     }
 
     /* access modifiers changed from: package-private */
-    public final /* synthetic */ void zze(zzcb zzcb) {
+    public final /* synthetic */ void zze(TimeTracker zzcb) {
         zzcp zzc = zzc(zzcb);
         if (zzc != null) {
             this.zzbs.add(zzc);

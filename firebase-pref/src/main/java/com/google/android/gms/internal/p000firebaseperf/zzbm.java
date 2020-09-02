@@ -2,7 +2,6 @@ package com.google.android.gms.internal.p000firebaseperf;
 
 import androidx.annotation.Nullable;
 import com.google.android.gms.dynamite.descriptors.com.google.firebase.perf.ModuleDescriptor;
-import com.google.android.gms.internal.p000firebaseperf.zzdc;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.internal.GaugeManager;
 import com.google.firebase.perf.internal.SessionManager;
@@ -21,7 +20,7 @@ import okhttp3.HttpUrl;
 /* renamed from: com.google.android.gms.internal.firebase-perf.zzbm  reason: invalid package */
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zzbm extends zzb implements zzx {
-    private zzbn zzai;
+    private LogUtil zzai;
     private final List<zzt> zzcp;
     private final GaugeManager zzcq;
     private zzf zzcr;
@@ -32,7 +31,7 @@ public final class zzbm extends zzb implements zzx {
 
     public final void zza(zzt zzt) {
         if (zzt == null) {
-            this.zzai.zzn("Unable to add new SessionId to the Network Trace. Continuing without it.");
+            this.zzai.i("Unable to add new SessionId to the Network Trace. Continuing without it.");
         } else if (this.zzcs.zzer() && !this.zzcs.zzex()) {
             this.zzcp.add(zzt);
         }
@@ -51,7 +50,7 @@ public final class zzbm extends zzb implements zzx {
         this.zzcs = zzdc.zzfa();
         this.zzcv = new WeakReference<>(this);
         this.zzcr = zzf;
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
         this.zzcq = gaugeManager;
         this.zzcp = new ArrayList();
         zzbr();
@@ -207,8 +206,8 @@ public final class zzbm extends zzb implements zzx {
     }
 
     public final zzbm zzk(long j) {
-        zzt zzcp2 = SessionManager.zzco().zzcp();
-        SessionManager.zzco().zzc(this.zzcv);
+        zzt zzcp2 = SessionManager.getInstance().zzcp();
+        SessionManager.getInstance().zzc(this.zzcv);
         this.zzcs.zzaj(j);
         zza(zzcp2);
         if (zzcp2.zzci()) {
@@ -233,8 +232,8 @@ public final class zzbm extends zzb implements zzx {
 
     public final zzbm zzn(long j) {
         this.zzcs.zzam(j);
-        if (SessionManager.zzco().zzcp().zzci()) {
-            this.zzcq.zzj(SessionManager.zzco().zzcp().zzch());
+        if (SessionManager.getInstance().zzcp().zzci()) {
+            this.zzcq.zzj(SessionManager.getInstance().zzcp().zzch());
         }
         return this;
     }
@@ -266,9 +265,9 @@ public final class zzbm extends zzb implements zzx {
             if (z) {
                 this.zzcs.zzai(str);
             } else {
-                zzbn zzbn = this.zzai;
+                LogUtil zzbn = this.zzai;
                 String valueOf = String.valueOf(str);
-                zzbn.zzn(valueOf.length() != 0 ? "The content type of the response is not a valid content-type:".concat(valueOf) : new String("The content type of the response is not a valid content-type:"));
+                zzbn.i(valueOf.length() != 0 ? "The content type of the response is not a valid content-type:".concat(valueOf) : new String("The content type of the response is not a valid content-type:"));
             }
         }
         return this;
@@ -280,7 +279,7 @@ public final class zzbm extends zzb implements zzx {
     }
 
     public final zzdc zzbq() {
-        SessionManager.zzco().zzd(this.zzcv);
+        SessionManager.getInstance().zzd(this.zzcv);
         zzbs();
         zzdj[] zza = zzt.zza(zzq.zza(this.zzcp));
         if (zza != null) {
@@ -293,7 +292,7 @@ public final class zzbm extends zzb implements zzx {
             }
             this.zzct = true;
         } else if (this.zzcu) {
-            this.zzai.zzn("This metric has already been queued for transmission.  Please create a new HttpMetric for each request/response");
+            this.zzai.i("This metric has already been queued for transmission.  Please create a new HttpMetric for each request/response");
         }
         return zzdc;
     }

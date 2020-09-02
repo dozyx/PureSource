@@ -1,18 +1,18 @@
 package com.google.firebase.perf.network;
 
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zza extends OutputStream {
-    private final zzcb zzgo;
+    private final TimeTracker zzgo;
     private OutputStream zzgt;
     private long zzgu = -1;
     private zzbm zzgv;
 
-    public zza(OutputStream outputStream, zzbm zzbm, zzcb zzcb) {
+    public zza(OutputStream outputStream, zzbm zzbm, TimeTracker zzcb) {
         this.zzgt = outputStream;
         this.zzgv = zzbm;
         this.zzgo = zzcb;

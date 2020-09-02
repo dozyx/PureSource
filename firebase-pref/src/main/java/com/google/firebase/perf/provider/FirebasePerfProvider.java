@@ -13,9 +13,8 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.common.internal.Preconditions;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
 import com.google.android.gms.internal.p000firebaseperf.zzbp;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
-import com.google.android.gms.internal.p000firebaseperf.zzcl;
-import com.google.android.gms.internal.p000firebaseperf.zzg;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
+import com.google.android.gms.internal.p000firebaseperf.ApplicationProcessState;
 import com.google.firebase.perf.internal.SessionManager;
 import com.google.firebase.perf.internal.zza;
 import com.google.firebase.perf.metrics.AppStartTrace;
@@ -23,11 +22,11 @@ import com.google.firebase.perf.metrics.AppStartTrace;
 @Keep
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public class FirebasePerfProvider extends ContentProvider {
-    private static final zzcb zzhh = new zzcb();
-    private final Handler mHandler = new zzg(Looper.getMainLooper());
+    private static final TimeTracker timeTracker = new TimeTracker();
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public static zzcb zzdb() {
-        return zzhh;
+    public static TimeTracker getAppStartTimeTracker() {
+        return timeTracker;
     }
 
     public void attachInfo(Context context, ProviderInfo providerInfo) {
@@ -36,15 +35,15 @@ public class FirebasePerfProvider extends ContentProvider {
             throw new IllegalStateException("Incorrect provider authority in manifest. Most likely due to a missing applicationId variable in application's build.gradle.");
         }
         super.attachInfo(context, providerInfo);
-        zzal zzn = zzal.zzn();
+        zzal zzn = zzal.getInstance();
         zzn.zzb(getContext());
         if (zzn.zzo()) {
             zza.zzbh().zze(getContext());
-            AppStartTrace zzcs = AppStartTrace.zzcs();
-            zzcs.zze(getContext());
-            this.mHandler.post(new AppStartTrace.zza(zzcs));
+            AppStartTrace appStartTrace = AppStartTrace.getInstance();
+            appStartTrace.init(getContext());
+            this.mHandler.post(new AppStartTrace.ColdStartDetector(appStartTrace));
         }
-        SessionManager.zzco().zzc(zzcl.FOREGROUND);
+        SessionManager.getInstance().zzc(ApplicationProcessState.FOREGROUND);
     }
 
     public boolean onCreate() {

@@ -16,7 +16,7 @@ public final class zzcd {
         if (identifier <= 0) {
             return true;
         }
-        zzbn.zzcn().zzn("Detected domain whitelist, only whitelisted domains will be measured.");
+        LogUtil.getInstance().i("Detected domain whitelist, only whitelisted domains will be measured.");
         if (zzii == null) {
             zzii = resources.getStringArray(identifier);
         }

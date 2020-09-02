@@ -3,7 +3,7 @@ package com.google.firebase.perf.internal;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import com.google.android.gms.common.util.VisibleForTesting;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbs;
 import com.google.android.gms.internal.p000firebaseperf.zzc;
 import com.google.android.gms.internal.p000firebaseperf.zzd;
@@ -20,7 +20,7 @@ public class RemoteConfigManager {
     private static final RemoteConfigManager zzfg = new RemoteConfigManager();
     private static final long zzfh = TimeUnit.HOURS.toMillis(12);
     private final Executor executor;
-    private zzbn zzai;
+    private LogUtil zzai;
     private long zzfi;
     @Nullable
     private FirebaseRemoteConfig zzfj;
@@ -36,7 +36,7 @@ public class RemoteConfigManager {
         this.executor = executor2;
         this.zzfj = null;
         this.zzfk = new ConcurrentHashMap<>();
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
     }
 
     public static RemoteConfigManager zzck() {
@@ -49,7 +49,7 @@ public class RemoteConfigManager {
 
     public final zzbs<Float> zzd(String str) {
         if (str == null) {
-            this.zzai.zzm("The key to get Remote Config float value is null.");
+            this.zzai.d("The key to get Remote Config float value is null.");
             return zzbs.zzdc();
         }
         FirebaseRemoteConfigValue zzl = zzl(str);
@@ -58,7 +58,7 @@ public class RemoteConfigManager {
                 return zzbs.zzb(Float.valueOf(Double.valueOf(zzl.asDouble()).floatValue()));
             } catch (IllegalArgumentException e) {
                 if (!zzl.asString().isEmpty()) {
-                    this.zzai.zzm(String.format("Could not parse value: '%s' for key: '%s'.", new Object[]{zzl.asString(), str}));
+                    this.zzai.d(String.format("Could not parse value: '%s' for key: '%s'.", new Object[]{zzl.asString(), str}));
                 }
             }
         }
@@ -67,7 +67,7 @@ public class RemoteConfigManager {
 
     public final zzbs<Long> zze(String str) {
         if (str == null) {
-            this.zzai.zzm("The key to get Remote Config long value is null.");
+            this.zzai.d("The key to get Remote Config long value is null.");
             return zzbs.zzdc();
         }
         FirebaseRemoteConfigValue zzl = zzl(str);
@@ -76,7 +76,7 @@ public class RemoteConfigManager {
                 return zzbs.zzb(Long.valueOf(zzl.asLong()));
             } catch (IllegalArgumentException e) {
                 if (!zzl.asString().isEmpty()) {
-                    this.zzai.zzm(String.format("Could not parse value: '%s' for key: '%s'.", new Object[]{zzl.asString(), str}));
+                    this.zzai.d(String.format("Could not parse value: '%s' for key: '%s'.", new Object[]{zzl.asString(), str}));
                 }
             }
         }
@@ -85,7 +85,7 @@ public class RemoteConfigManager {
 
     public final zzbs<Boolean> zzb(String str) {
         if (str == null) {
-            this.zzai.zzm("The key to get Remote Config boolean value is null.");
+            this.zzai.d("The key to get Remote Config boolean value is null.");
             return zzbs.zzdc();
         }
         FirebaseRemoteConfigValue zzl = zzl(str);
@@ -94,7 +94,7 @@ public class RemoteConfigManager {
                 return zzbs.zzb(Boolean.valueOf(zzl.asBoolean()));
             } catch (IllegalArgumentException e) {
                 if (!zzl.asString().isEmpty()) {
-                    this.zzai.zzm(String.format("Could not parse value: '%s' for key: '%s'.", new Object[]{zzl.asString(), str}));
+                    this.zzai.d(String.format("Could not parse value: '%s' for key: '%s'.", new Object[]{zzl.asString(), str}));
                 }
             }
         }
@@ -103,7 +103,7 @@ public class RemoteConfigManager {
 
     public final zzbs<String> zzc(String str) {
         if (str == null) {
-            this.zzai.zzm("The key to get Remote Config String value is null.");
+            this.zzai.d("The key to get Remote Config String value is null.");
             return zzbs.zzdc();
         }
         FirebaseRemoteConfigValue zzl = zzl(str);
@@ -200,7 +200,7 @@ public class RemoteConfigManager {
         if (zzcm() && this.zzfk.containsKey(str)) {
             FirebaseRemoteConfigValue firebaseRemoteConfigValue = this.zzfk.get(str);
             if (firebaseRemoteConfigValue.getSource() == 2) {
-                this.zzai.zzm(String.format("Fetched value: '%s' for key: '%s' from Firebase Remote Config.", new Object[]{firebaseRemoteConfigValue.asString(), str}));
+                this.zzai.d(String.format("Fetched value: '%s' for key: '%s' from Firebase Remote Config.", new Object[]{firebaseRemoteConfigValue.asString(), str}));
                 return firebaseRemoteConfigValue;
             }
         }

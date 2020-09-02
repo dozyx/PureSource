@@ -22,7 +22,7 @@ public final class zzv {
     private zzu zzfe;
 
     public zzv(@NonNull Context context, double d, long j) {
-        this(100.0d, 500, new zzbp(), new Random().nextFloat(), zzal.zzn());
+        this(100.0d, 500, new zzbp(), new Random().nextFloat(), zzal.getInstance());
         this.zzdp = zzcf.zzg(context);
     }
 

@@ -5,14 +5,14 @@ import android.content.Context;
 import android.os.Process;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.gms.internal.p000firebaseperf.zzae;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbv;
 import java.util.Iterator;
 import java.util.List;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 final class zzr {
-    private final zzbn zzai;
+    private final LogUtil zzai;
     private final Runtime zzbw;
     private final ActivityManager zzem;
     private final ActivityManager.MemoryInfo zzen;
@@ -31,7 +31,7 @@ final class zzr {
         this.zzem = (ActivityManager) context.getSystemService("activity");
         this.zzen = new ActivityManager.MemoryInfo();
         this.zzem.getMemoryInfo(this.zzen);
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
         int myPid = Process.myPid();
         List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = this.zzem.getRunningAppProcesses();
         if (runningAppProcesses != null) {

@@ -18,7 +18,7 @@ final class zze {
 
     /* access modifiers changed from: package-private */
     public final zzdr zzcz() {
-        zzdr.zza zzap = zzdr.zzfz().zzak(this.zzgs.getName()).zzao(this.zzgs.zzcv().zzdd()).zzap(this.zzgs.zzcv().zzk(this.zzgs.zzcw()));
+        zzdr.zza zzap = zzdr.zzfz().zzak(this.zzgs.getName()).zzao(this.zzgs.zzcv().getTimeStamp()).zzap(this.zzgs.zzcv().getDurationMicros(this.zzgs.zzcw()));
         for (zzb next : this.zzgs.zzcu().values()) {
             zzap.zzc(next.getName(), next.getCount());
         }

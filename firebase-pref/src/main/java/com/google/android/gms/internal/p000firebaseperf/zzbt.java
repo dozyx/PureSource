@@ -5,7 +5,7 @@ import android.os.Bundle;
 /* renamed from: com.google.android.gms.internal.firebase-perf.zzbt  reason: invalid package */
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zzbt {
-    private zzbn zzai;
+    private LogUtil zzai;
     private final Bundle zzhx;
 
     public zzbt() {
@@ -14,7 +14,7 @@ public final class zzbt {
 
     public zzbt(Bundle bundle) {
         this.zzhx = (Bundle) bundle.clone();
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
     }
 
     private final boolean containsKey(String str) {
@@ -28,7 +28,7 @@ public final class zzbt {
         try {
             return zzbs.zzc((Boolean) this.zzhx.get(str));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Metadata key %s contains type other than boolean: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Metadata key %s contains type other than boolean: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }
@@ -40,7 +40,7 @@ public final class zzbt {
         try {
             return zzbs.zzc((Float) this.zzhx.get(str));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Metadata key %s contains type other than float: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Metadata key %s contains type other than float: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }
@@ -60,7 +60,7 @@ public final class zzbt {
         try {
             return zzbs.zzc((Integer) this.zzhx.get(str));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Metadata key %s contains type other than int: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Metadata key %s contains type other than int: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }

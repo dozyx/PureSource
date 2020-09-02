@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.firebase.perf.internal.zzf;
 import com.google.firebase.perf.internal.zzq;
 import java.net.URL;
@@ -17,28 +17,28 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public class HttpMetric {
-    private zzbn zzai;
+    private LogUtil zzai;
     private zzbm zzgn;
-    private zzcb zzgo;
+    private TimeTracker zzgo;
     private final Map<String, String> zzgp;
     private boolean zzgq;
     private boolean zzgr;
 
-    public HttpMetric(String str, String str2, zzf zzf, zzcb zzcb) {
+    public HttpMetric(String str, String str2, zzf zzf, TimeTracker zzcb) {
         this.zzgq = false;
         this.zzgr = false;
         this.zzgp = new ConcurrentHashMap();
         this.zzgo = zzcb;
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
         this.zzgn = zzbm.zzb(zzf).zzf(str).zzg(str2);
         this.zzgn.zzbm();
-        if (!zzal.zzn().zzo()) {
-            this.zzai.zzn(String.format(Locale.ENGLISH, "HttpMetric feature is disabled. URL %s", new Object[]{str}));
+        if (!zzal.getInstance().zzo()) {
+            this.zzai.i(String.format(Locale.ENGLISH, "HttpMetric feature is disabled. URL %s", new Object[]{str}));
             this.zzgr = true;
         }
     }
 
-    public HttpMetric(URL url, String str, zzf zzf, zzcb zzcb) {
+    public HttpMetric(URL url, String str, zzf zzf, TimeTracker zzcb) {
         this(url.toString(), str, zzf, zzcb);
     }
 
@@ -60,7 +60,7 @@ public class HttpMetric {
 
     public void start() {
         this.zzgo.reset();
-        this.zzgn.zzk(this.zzgo.zzdd());
+        this.zzgn.zzk(this.zzgo.getTimeStamp());
     }
 
     public void stop() {
@@ -84,7 +84,7 @@ public class HttpMetric {
                 if (zza != null) {
                     throw new IllegalArgumentException(zza);
                 }
-                this.zzai.zzm(String.format(Locale.ENGLISH, "Setting attribute '%s' to %s on network request '%s'", new Object[]{str, str2, this.zzgn.getUrl()}));
+                this.zzai.d(String.format(Locale.ENGLISH, "Setting attribute '%s' to %s on network request '%s'", new Object[]{str, str2, this.zzgn.getUrl()}));
                 z = true;
                 if (z) {
                     this.zzgp.put(str, str2);
@@ -93,14 +93,14 @@ public class HttpMetric {
                 throw new IllegalArgumentException(String.format(Locale.ENGLISH, "Exceeds max limit of number of attributes - %d", new Object[]{5}));
             }
         } catch (Exception e) {
-            this.zzai.zzp(String.format(Locale.ENGLISH, "Cannot set attribute '%s' with value '%s' (%s)", new Object[]{str, str2, e.getMessage()}));
+            this.zzai.e(String.format(Locale.ENGLISH, "Cannot set attribute '%s' with value '%s' (%s)", new Object[]{str, str2, e.getMessage()}));
             z = false;
         }
     }
 
     public void removeAttribute(@NonNull String str) {
         if (this.zzgq) {
-            this.zzai.zzp("Can't remove a attribute from a HttpMetric that's stopped.");
+            this.zzai.e("Can't remove a attribute from a HttpMetric that's stopped.");
         } else {
             this.zzgp.remove(str);
         }

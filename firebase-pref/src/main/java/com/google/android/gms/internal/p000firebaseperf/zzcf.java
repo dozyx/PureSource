@@ -18,9 +18,9 @@ public final class zzcf {
             zzip = valueOf;
             return valueOf.booleanValue();
         } catch (PackageManager.NameNotFoundException | NullPointerException e) {
-            zzbn zzcn = zzbn.zzcn();
+            LogUtil zzcn = LogUtil.getInstance();
             String valueOf2 = String.valueOf(e.getMessage());
-            zzcn.zzm(valueOf2.length() != 0 ? "No perf logcat meta data found ".concat(valueOf2) : new String("No perf logcat meta data found "));
+            zzcn.d(valueOf2.length() != 0 ? "No perf logcat meta data found ".concat(valueOf2) : new String("No perf logcat meta data found "));
             return false;
         }
     }

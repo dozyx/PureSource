@@ -2,7 +2,7 @@ package com.google.firebase.perf.network;
 
 import androidx.annotation.Keep;
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.android.gms.internal.p000firebaseperf.zzcc;
 import com.google.firebase.perf.internal.zzf;
 import java.io.IOException;
@@ -19,12 +19,12 @@ public class FirebasePerfUrlConnection {
 
     @Keep
     public static InputStream openStream(URL url) throws IOException {
-        return zza(new zzcc(url), zzf.zzbu(), new zzcb());
+        return zza(new zzcc(url), zzf.zzbu(), new TimeTracker());
     }
 
-    private static InputStream zza(zzcc zzcc, zzf zzf, zzcb zzcb) throws IOException {
+    private static InputStream zza(zzcc zzcc, zzf zzf, TimeTracker zzcb) throws IOException {
         zzcb.reset();
-        long zzdd = zzcb.zzdd();
+        long zzdd = zzcb.getTimeStamp();
         zzbm zzb = zzbm.zzb(zzf);
         try {
             URLConnection openConnection = zzcc.openConnection();
@@ -46,17 +46,17 @@ public class FirebasePerfUrlConnection {
 
     @Keep
     public static Object getContent(URL url) throws IOException {
-        return zzb(new zzcc(url), zzf.zzbu(), new zzcb());
+        return zzb(new zzcc(url), zzf.zzbu(), new TimeTracker());
     }
 
     @Keep
     public static Object getContent(URL url, Class[] clsArr) throws IOException {
-        return zza(new zzcc(url), clsArr, zzf.zzbu(), new zzcb());
+        return zza(new zzcc(url), clsArr, zzf.zzbu(), new TimeTracker());
     }
 
-    private static Object zzb(zzcc zzcc, zzf zzf, zzcb zzcb) throws IOException {
+    private static Object zzb(zzcc zzcc, zzf zzf, TimeTracker zzcb) throws IOException {
         zzcb.reset();
-        long zzdd = zzcb.zzdd();
+        long zzdd = zzcb.getTimeStamp();
         zzbm zzb = zzbm.zzb(zzf);
         try {
             URLConnection openConnection = zzcc.openConnection();
@@ -76,9 +76,9 @@ public class FirebasePerfUrlConnection {
         }
     }
 
-    private static Object zza(zzcc zzcc, Class[] clsArr, zzf zzf, zzcb zzcb) throws IOException {
+    private static Object zza(zzcc zzcc, Class[] clsArr, zzf zzf, TimeTracker zzcb) throws IOException {
         zzcb.reset();
-        long zzdd = zzcb.zzdd();
+        long zzdd = zzcb.getTimeStamp();
         zzbm zzb = zzbm.zzb(zzf);
         try {
             URLConnection openConnection = zzcc.openConnection();
@@ -101,10 +101,10 @@ public class FirebasePerfUrlConnection {
     @Keep
     public static Object instrument(Object obj) throws IOException {
         if (obj instanceof HttpsURLConnection) {
-            return new zzc((HttpsURLConnection) obj, new zzcb(), zzbm.zzb(zzf.zzbu()));
+            return new zzc((HttpsURLConnection) obj, new TimeTracker(), zzbm.zzb(zzf.zzbu()));
         }
         if (obj instanceof HttpURLConnection) {
-            return new zzd((HttpURLConnection) obj, new zzcb(), zzbm.zzb(zzf.zzbu()));
+            return new zzd((HttpURLConnection) obj, new TimeTracker(), zzbm.zzb(zzf.zzbu()));
         }
         return obj;
     }

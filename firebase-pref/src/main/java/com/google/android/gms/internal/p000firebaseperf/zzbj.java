@@ -4,9 +4,9 @@ package com.google.android.gms.internal.p000firebaseperf;
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 final /* synthetic */ class zzbj implements Runnable {
     private final zzbh zzbj;
-    private final zzcb zzbk;
+    private final TimeTracker zzbk;
 
-    zzbj(zzbh zzbh, zzcb zzcb) {
+    zzbj(zzbh zzbh, TimeTracker zzcb) {
         this.zzbj = zzbh;
         this.zzbk = zzcb;
     }

@@ -2,7 +2,7 @@ package com.google.firebase.perf.network;
 
 import androidx.annotation.Keep;
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.firebase.perf.internal.zzf;
 import java.io.IOException;
 import okhttp3.Call;
@@ -21,8 +21,8 @@ public class FirebasePerfOkHttpClient {
     @Keep
     public static Response execute(Call call) throws IOException {
         zzbm zzb = zzbm.zzb(zzf.zzbu());
-        zzcb zzcb = new zzcb();
-        long zzdd = zzcb.zzdd();
+        TimeTracker zzcb = new TimeTracker();
+        long zzdd = zzcb.getTimeStamp();
         try {
             Response execute = call.execute();
             zza(execute, zzb, zzdd, zzcb.getDurationMicros());
@@ -47,9 +47,9 @@ public class FirebasePerfOkHttpClient {
 
     @Keep
     public static void enqueue(Call call, Callback callback) {
-        zzcb zzcb = new zzcb();
+        TimeTracker zzcb = new TimeTracker();
         Callback callback2 = callback;
-        call.enqueue(new zzh(callback2, zzf.zzbu(), zzcb, zzcb.zzdd()));
+        call.enqueue(new zzh(callback2, zzf.zzbu(), zzcb, zzcb.getTimeStamp()));
     }
 
     static void zza(Response response, zzbm zzbm, long j, long j2) throws IOException {

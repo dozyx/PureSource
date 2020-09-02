@@ -1,11 +1,11 @@
 package com.google.firebase.perf.internal;
 
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzcj;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zzc extends zzq {
-    private zzbn zzai = zzbn.zzcn();
+    private LogUtil zzai = LogUtil.getInstance();
     private final zzcj zzda;
 
     zzc(zzcj zzcj) {
@@ -15,24 +15,24 @@ public final class zzc extends zzq {
     public final boolean zzbt() {
         boolean z;
         if (this.zzda == null) {
-            this.zzai.zzo("ApplicationInfo is null");
+            this.zzai.w("ApplicationInfo is null");
             z = false;
         } else if (!this.zzda.zzdk()) {
-            this.zzai.zzo("GoogleAppId is null");
+            this.zzai.w("GoogleAppId is null");
             z = false;
         } else if (!this.zzda.hasAppInstanceId()) {
-            this.zzai.zzo("AppInstanceId is null");
+            this.zzai.w("AppInstanceId is null");
             z = false;
         } else if (!this.zzda.zzdn()) {
-            this.zzai.zzo("ApplicationProcessState is null");
+            this.zzai.w("ApplicationProcessState is null");
             z = false;
         } else {
             if (this.zzda.zzdl()) {
                 if (!this.zzda.zzdm().hasPackageName()) {
-                    this.zzai.zzo("AndroidAppInfo.packageName is null");
+                    this.zzai.w("AndroidAppInfo.packageName is null");
                     z = false;
                 } else if (!this.zzda.zzdm().hasSdkVersion()) {
-                    this.zzai.zzo("AndroidAppInfo.sdkVersion is null");
+                    this.zzai.w("AndroidAppInfo.sdkVersion is null");
                     z = false;
                 }
             }
@@ -41,7 +41,7 @@ public final class zzc extends zzq {
         if (z) {
             return true;
         }
-        this.zzai.zzo("ApplicationInfo is invalid");
+        this.zzai.w("ApplicationInfo is invalid");
         return false;
     }
 }

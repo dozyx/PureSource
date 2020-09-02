@@ -8,9 +8,9 @@ import com.google.android.gms.dynamite.descriptors.com.google.firebase.perf.Modu
 import com.google.android.gms.internal.p000firebaseperf.zzal;
 import com.google.android.gms.internal.p000firebaseperf.zzbh;
 import com.google.android.gms.internal.p000firebaseperf.zzbi;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
-import com.google.android.gms.internal.p000firebaseperf.zzcl;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
+import com.google.android.gms.internal.p000firebaseperf.ApplicationProcessState;
 import com.google.android.gms.internal.p000firebaseperf.zzcu;
 import com.google.android.gms.internal.p000firebaseperf.zzcv;
 import com.google.android.gms.internal.p000firebaseperf.zzfn;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class GaugeManager {
     private static GaugeManager zzdy = new GaugeManager();
     private final zzal zzag;
-    private zzbn zzai;
+    private LogUtil zzai;
     @Nullable
     private zzf zzcr;
     private final ScheduledExecutorService zzdz;
@@ -34,7 +34,7 @@ public class GaugeManager {
     private final zzbi zzeb;
     @Nullable
     private zzr zzec;
-    private zzcl zzed;
+    private ApplicationProcessState zzed;
     @Nullable
     private String zzee;
     @Nullable
@@ -46,21 +46,21 @@ public class GaugeManager {
         /* access modifiers changed from: private */
         public final zzcv zzdx;
         /* access modifiers changed from: private */
-        public final zzcl zzed;
+        public final ApplicationProcessState zzed;
 
-        zza(GaugeManager gaugeManager, zzcv zzcv, zzcl zzcl) {
+        zza(GaugeManager gaugeManager, zzcv zzcv, ApplicationProcessState zzcl) {
             this.zzdx = zzcv;
             this.zzed = zzcl;
         }
     }
 
     private GaugeManager() {
-        this(Executors.newSingleThreadScheduledExecutor(), null, zzal.zzn(), null, zzbh.zzbe(), zzbi.zzbg());
+        this(Executors.newSingleThreadScheduledExecutor(), null, zzal.getInstance(), null, zzbh.zzbe(), zzbi.zzbg());
     }
 
     @VisibleForTesting
     private GaugeManager(ScheduledExecutorService scheduledExecutorService, zzf zzf, zzal zzal, zzr zzr, zzbh zzbh, zzbi zzbi) {
-        this.zzed = zzcl.APPLICATION_PROCESS_STATE_UNKNOWN;
+        this.zzed = ApplicationProcessState.APPLICATION_PROCESS_STATE_UNKNOWN;
         this.zzee = null;
         this.zzef = null;
         this.zzeg = new ConcurrentLinkedQueue<>();
@@ -70,7 +70,7 @@ public class GaugeManager {
         this.zzec = null;
         this.zzea = zzbh;
         this.zzeb = zzbi;
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
     }
 
     public final void zzc(Context context) {
@@ -85,7 +85,7 @@ public class GaugeManager {
         return gaugeManager;
     }
 
-    public final void zza(zzt zzt, zzcl zzcl) {
+    public final void zza(zzt zzt, ApplicationProcessState zzcl) {
         long zzv;
         boolean z;
         long zzx;
@@ -95,7 +95,7 @@ public class GaugeManager {
         if (this.zzee != null) {
             zzcb();
         }
-        zzcb zzch = zzt.zzch();
+        TimeTracker zzch = zzt.zzch();
         switch (zzp.zzel[zzcl.ordinal()]) {
             case ModuleDescriptor.MODULE_VERSION:
                 zzv = this.zzag.zzw();
@@ -111,7 +111,7 @@ public class GaugeManager {
             zzv = -1;
         }
         if (zzv == -1) {
-            this.zzai.zzm("Invalid Cpu Metrics collection frequency. Did not collect Cpu Metrics.");
+            this.zzai.d("Invalid Cpu Metrics collection frequency. Did not collect Cpu Metrics.");
             z = false;
         } else {
             this.zzea.zza(zzv, zzch);
@@ -135,7 +135,7 @@ public class GaugeManager {
             zzx = -1;
         }
         if (zzx == -1) {
-            this.zzai.zzm("Invalid Memory Metrics collection frequency. Did not collect Memory Metrics.");
+            this.zzai.d("Invalid Memory Metrics collection frequency. Did not collect Memory Metrics.");
         } else {
             this.zzeb.zza(zzx, zzch);
             z2 = true;
@@ -151,7 +151,7 @@ public class GaugeManager {
             j = zzv;
         }
         if (j == -1) {
-            this.zzai.zzo("Invalid gauge collection frequency. Unable to start collecting Gauges.");
+            this.zzai.w("Invalid gauge collection frequency. Unable to start collecting Gauges.");
             return;
         }
         this.zzee = zzt.zzcg();
@@ -159,16 +159,16 @@ public class GaugeManager {
         try {
             this.zzef = this.zzdz.scheduleAtFixedRate(new zzo(this, this.zzee, zzcl), j * 20, j * 20, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException e) {
-            zzbn zzbn = this.zzai;
+            LogUtil zzbn = this.zzai;
             String valueOf = String.valueOf(e.getMessage());
-            zzbn.zzo(valueOf.length() != 0 ? "Unable to start collecting Gauges: ".concat(valueOf) : new String("Unable to start collecting Gauges: "));
+            zzbn.w(valueOf.length() != 0 ? "Unable to start collecting Gauges: ".concat(valueOf) : new String("Unable to start collecting Gauges: "));
         }
     }
 
     public final void zzcb() {
         if (this.zzee != null) {
             String str = this.zzee;
-            zzcl zzcl = this.zzed;
+            ApplicationProcessState zzcl = this.zzed;
             this.zzea.zzbf();
             this.zzeb.zzbf();
             if (this.zzef != null) {
@@ -182,7 +182,7 @@ public class GaugeManager {
 
     /* access modifiers changed from: private */
     /* renamed from: zza */
-    public final void zzd(String str, zzcl zzcl) {
+    public final void zzd(String str, ApplicationProcessState zzcl) {
         zzcv.zza zzee2 = zzcv.zzee();
         while (!this.zzea.zzbs.isEmpty()) {
             zzee2.zzb(this.zzea.zzbs.poll());
@@ -195,7 +195,7 @@ public class GaugeManager {
     }
 
     /* access modifiers changed from: package-private */
-    public final boolean zzb(String str, zzcl zzcl) {
+    public final boolean zzb(String str, ApplicationProcessState zzcl) {
         if (this.zzec == null) {
             return false;
         }
@@ -203,7 +203,7 @@ public class GaugeManager {
         return true;
     }
 
-    private final void zzc(zzcv zzcv, zzcl zzcl) {
+    private final void zzc(zzcv zzcv, ApplicationProcessState zzcl) {
         this.zzcr = this.zzcr == null ? zzf.zzbu() : this.zzcr;
         if (this.zzcr != null) {
             this.zzcr.zza(zzcv, zzcl);
@@ -216,7 +216,7 @@ public class GaugeManager {
         this.zzeg.add(new zza(this, zzcv, zzcl));
     }
 
-    public final void zzj(zzcb zzcb) {
+    public final void zzj(TimeTracker zzcb) {
         zzbh zzbh = this.zzea;
         zzbi zzbi = this.zzeb;
         zzbh.zza(zzcb);

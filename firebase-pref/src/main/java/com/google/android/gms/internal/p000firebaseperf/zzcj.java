@@ -1,8 +1,7 @@
 package com.google.android.gms.internal.p000firebaseperf;
 
 import com.google.android.gms.dynamite.descriptors.com.google.firebase.perf.ModuleDescriptor;
-import com.google.android.gms.internal.p000firebaseperf.zzce;
-import com.google.android.gms.internal.p000firebaseperf.zzfn;
+
 import java.util.Map;
 
 /* renamed from: com.google.android.gms.internal.firebase-perf.zzcj  reason: invalid package */
@@ -58,7 +57,7 @@ public final class zzcj extends zzfn<zzcj, zza> implements zzgz {
             return this;
         }
 
-        public final zza zzf(zzcl zzcl) {
+        public final zza zzf(ApplicationProcessState zzcl) {
             if (this.zzra) {
                 zzhj();
                 this.zzra = false;
@@ -132,7 +131,7 @@ public final class zzcj extends zzfn<zzcj, zza> implements zzgz {
     }
 
     /* access modifiers changed from: private */
-    public final void zze(zzcl zzcl) {
+    public final void zze(ApplicationProcessState zzcl) {
         this.zziy = zzcl.getNumber();
         this.zzij |= 32;
     }
@@ -158,7 +157,7 @@ public final class zzcj extends zzfn<zzcj, zza> implements zzgz {
             case 2:
                 return new zza(null);
             case 3:
-                return zza((zzgx) zzja, "\u0001\u0007\u0000\u0001\u0001\u0007\u0007\u0001\u0000\u0000\u0001ဈ\u0000\u0002ဈ\u0001\u0003ဉ\u0002\u0004ဉ\u0003\u0005ဌ\u0005\u00062\u0007ဉ\u0004", new Object[]{"zzij", "zzit", "zziu", "zziv", "zziw", "zziy", zzcl.zzds(), "zziz", zzb.zzjh, "zzix"});
+                return zza((zzgx) zzja, "\u0001\u0007\u0000\u0001\u0001\u0007\u0007\u0001\u0000\u0000\u0001ဈ\u0000\u0002ဈ\u0001\u0003ဉ\u0002\u0004ဉ\u0003\u0005ဌ\u0005\u00062\u0007ဉ\u0004", new Object[]{"zzij", "zzit", "zziu", "zziv", "zziw", "zziy", ApplicationProcessState.zzds(), "zziz", zzb.zzjh, "zzix"});
             case 4:
                 return zzja;
             case 5:

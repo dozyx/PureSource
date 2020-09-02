@@ -2,7 +2,7 @@ package com.google.firebase.perf.network;
 
 import androidx.annotation.NonNull;
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpMessage;
 import org.apache.http.HttpResponse;
@@ -16,7 +16,7 @@ public final class zzg {
                 return Long.valueOf(Long.parseLong(firstHeader.getValue()));
             }
         } catch (NumberFormatException e) {
-            zzbn.zzcn().zzm("The content-length value is not a valid number");
+            LogUtil.getInstance().d("The content-length value is not a valid number");
         }
         return null;
     }

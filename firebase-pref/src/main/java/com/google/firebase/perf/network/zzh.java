@@ -1,7 +1,7 @@
 package com.google.firebase.perf.network;
 
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.firebase.perf.internal.zzf;
 import java.io.IOException;
 import okhttp3.Call;
@@ -12,12 +12,12 @@ import okhttp3.Response;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zzh implements Callback {
-    private final zzcb zzgo;
+    private final TimeTracker zzgo;
     private final zzbm zzgv;
     private final Callback zzhf;
     private final long zzhg;
 
-    public zzh(Callback callback, zzf zzf, zzcb zzcb, long j) {
+    public zzh(Callback callback, zzf zzf, TimeTracker zzcb, long j) {
         this.zzhf = callback;
         this.zzgv = zzbm.zzb(zzf);
         this.zzhg = j;

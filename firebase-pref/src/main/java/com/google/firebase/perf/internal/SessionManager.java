@@ -3,7 +3,7 @@ package com.google.firebase.perf.internal;
 import android.annotation.SuppressLint;
 import androidx.annotation.Keep;
 import com.google.android.gms.common.util.VisibleForTesting;
-import com.google.android.gms.internal.p000firebaseperf.zzcl;
+import com.google.android.gms.internal.p000firebaseperf.ApplicationProcessState;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,14 +13,14 @@ import java.util.Set;
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public class SessionManager extends zzb {
     @SuppressLint({"StaticFieldLeak"})
-    private static final SessionManager zzfn = new SessionManager();
+    private static final SessionManager INSTANCE = new SessionManager();
     private final GaugeManager zzcq;
     private final zza zzdo;
     private final Set<WeakReference<zzx>> zzfo;
     private zzt zzfp;
 
-    public static SessionManager zzco() {
-        return zzfn;
+    public static SessionManager getInstance() {
+        return INSTANCE;
     }
 
     public final zzt zzcp() {
@@ -40,7 +40,7 @@ public class SessionManager extends zzb {
         zzbr();
     }
 
-    public final void zzb(zzcl zzcl) {
+    public final void zzb(ApplicationProcessState zzcl) {
         super.zzb(zzcl);
         if (!this.zzdo.zzbi()) {
             if (zzcl == zzcl.FOREGROUND) {
@@ -60,7 +60,7 @@ public class SessionManager extends zzb {
         return true;
     }
 
-    public final void zzc(zzcl zzcl) {
+    public final void zzc(ApplicationProcessState zzcl) {
         synchronized (this.zzfo) {
             this.zzfp = zzt.zzcf();
             Iterator<WeakReference<zzx>> it = this.zzfo.iterator();
@@ -91,7 +91,7 @@ public class SessionManager extends zzb {
         }
     }
 
-    private final void zzd(zzcl zzcl) {
+    private final void zzd(ApplicationProcessState zzcl) {
         if (this.zzfp.zzci()) {
             this.zzcq.zza(this.zzfp, zzcl);
         } else {

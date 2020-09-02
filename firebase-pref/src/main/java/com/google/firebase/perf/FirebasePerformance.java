@@ -8,9 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbt;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.perf.internal.GaugeManager;
 import com.google.firebase.perf.internal.RemoteConfigManager;
@@ -32,7 +32,7 @@ public class FirebasePerformance {
     private final Map<String, String> zzaf;
     private final zzal zzag;
     private final zzbt zzah;
-    private zzbn zzai;
+    private LogUtil zzai;
     @Nullable
     private Boolean zzaj;
 
@@ -63,13 +63,13 @@ public class FirebasePerformance {
     }
 
     FirebasePerformance(FirebaseApp firebaseApp, FirebaseRemoteConfig firebaseRemoteConfig) {
-        this(firebaseApp, firebaseRemoteConfig, RemoteConfigManager.zzck(), zzal.zzn(), GaugeManager.zzca());
+        this(firebaseApp, firebaseRemoteConfig, RemoteConfigManager.zzck(), zzal.getInstance(), GaugeManager.zzca());
     }
 
     @VisibleForTesting
     private FirebasePerformance(FirebaseApp firebaseApp, FirebaseRemoteConfig firebaseRemoteConfig, RemoteConfigManager remoteConfigManager, zzal zzal, GaugeManager gaugeManager) {
         this.zzaf = new ConcurrentHashMap();
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
         this.zzaj = null;
         if (firebaseApp == null) {
             this.zzaj = false;
@@ -102,7 +102,7 @@ public class FirebasePerformance {
         try {
             FirebaseApp.getInstance();
             if (this.zzag.zzq().booleanValue()) {
-                this.zzai.zzn("Firebase Performance is permanently disabled");
+                this.zzai.i("Firebase Performance is permanently disabled");
             } else {
                 this.zzag.zzb(bool);
                 if (bool != null) {
@@ -111,9 +111,9 @@ public class FirebasePerformance {
                     this.zzaj = this.zzag.zzp();
                 }
                 if (Boolean.TRUE.equals(this.zzaj)) {
-                    this.zzai.zzn("Firebase Performance is Enabled");
+                    this.zzai.i("Firebase Performance is Enabled");
                 } else if (Boolean.FALSE.equals(this.zzaj)) {
-                    this.zzai.zzn("Firebase Performance is Disabled");
+                    this.zzai.i("Firebase Performance is Disabled");
                 }
             }
         } catch (IllegalStateException e) {
@@ -139,12 +139,12 @@ public class FirebasePerformance {
 
     @NonNull
     public HttpMetric newHttpMetric(@NonNull String str, @NonNull String str2) {
-        return new HttpMetric(str, str2, zzf.zzbu(), new zzcb());
+        return new HttpMetric(str, str2, zzf.zzbu(), new TimeTracker());
     }
 
     @NonNull
     public HttpMetric newHttpMetric(@NonNull URL url, @NonNull String str) {
-        return new HttpMetric(url, str, zzf.zzbu(), new zzcb());
+        return new HttpMetric(url, str, zzf.zzbu(), new TimeTracker());
     }
 
     private static zzbt zza(Context context) {

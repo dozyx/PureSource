@@ -1,8 +1,8 @@
 package com.google.firebase.perf.network;
 
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.firebase.perf.FirebasePerformance;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,25 +16,25 @@ import java.util.Map;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 final class zzf {
-    private zzbn zzai;
-    private final zzcb zzgo;
+    private LogUtil zzai;
+    private final TimeTracker zzgo;
     private final zzbm zzgv;
     private long zzgy = -1;
     private final HttpURLConnection zzhd;
     private long zzhe = -1;
 
-    public zzf(HttpURLConnection httpURLConnection, zzcb zzcb, zzbm zzbm) {
+    public zzf(HttpURLConnection httpURLConnection, TimeTracker zzcb, zzbm zzbm) {
         this.zzhd = httpURLConnection;
         this.zzgv = zzbm;
         this.zzgo = zzcb;
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
         this.zzgv.zzf(this.zzhd.getURL().toString());
     }
 
     public final void connect() throws IOException {
         if (this.zzhe == -1) {
             this.zzgo.reset();
-            this.zzhe = this.zzgo.zzdd();
+            this.zzhe = this.zzgo.getTimeStamp();
             this.zzgv.zzk(this.zzhe);
         }
         try {
@@ -264,7 +264,7 @@ final class zzf {
         try {
             this.zzgv.zzd(this.zzhd.getResponseCode());
         } catch (IOException e) {
-            this.zzai.zzm("IOException thrown trying to obtain the response code");
+            this.zzai.d("IOException thrown trying to obtain the response code");
         }
         InputStream errorStream = this.zzhd.getErrorStream();
         if (errorStream != null) {
@@ -376,7 +376,7 @@ final class zzf {
     private final void zzda() {
         if (this.zzhe == -1) {
             this.zzgo.reset();
-            this.zzhe = this.zzgo.zzdd();
+            this.zzhe = this.zzgo.getTimeStamp();
             this.zzgv.zzk(this.zzhe);
         }
         String requestMethod = this.zzhd.getRequestMethod();

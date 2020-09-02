@@ -10,13 +10,13 @@ import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 import com.google.android.gms.clearcut.ClearcutLogger;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbr;
 import com.google.android.gms.internal.p000firebaseperf.zzc;
 import com.google.android.gms.internal.p000firebaseperf.zzce;
 import com.google.android.gms.internal.p000firebaseperf.zzcf;
 import com.google.android.gms.internal.p000firebaseperf.zzcj;
-import com.google.android.gms.internal.p000firebaseperf.zzcl;
+import com.google.android.gms.internal.p000firebaseperf.ApplicationProcessState;
 import com.google.android.gms.internal.p000firebaseperf.zzcv;
 import com.google.android.gms.internal.p000firebaseperf.zzd;
 import com.google.android.gms.internal.p000firebaseperf.zzdc;
@@ -41,7 +41,7 @@ public class zzf {
     @SuppressLint({"StaticFieldLeak"})
     private static volatile zzf zzde;
     private zzal zzag = null;
-    private zzbn zzai = zzbn.zzcn();
+    private LogUtil zzai = LogUtil.getInstance();
     private final ExecutorService zzdf = zzc.zza().zza(zzd.zzc);
     private FirebaseApp zzdg;
     @Nullable
@@ -78,19 +78,19 @@ public class zzf {
         this.zzdf.execute(new zze(this));
     }
 
-    public final void zza(@NonNull zzdr zzdr, zzcl zzcl) {
+    public final void zza(@NonNull zzdr zzdr, ApplicationProcessState zzcl) {
         this.zzdf.execute(new zzh(this, zzdr, zzcl));
-        SessionManager.zzco().zzcq();
+        SessionManager.getInstance().zzcq();
     }
 
-    public final void zza(@NonNull zzdc zzdc, zzcl zzcl) {
+    public final void zza(@NonNull zzdc zzdc, ApplicationProcessState zzcl) {
         this.zzdf.execute(new zzg(this, zzdc, zzcl));
-        SessionManager.zzco().zzcq();
+        SessionManager.getInstance().zzcq();
     }
 
-    public final void zza(zzcv zzcv, zzcl zzcl) {
+    public final void zza(zzcv zzcv, ApplicationProcessState zzcl) {
         this.zzdf.execute(new zzj(this, zzcv, zzcl));
-        SessionManager.zzco().zzcq();
+        SessionManager.getInstance().zzcq();
     }
 
     public final void zzb(boolean z) {
@@ -114,16 +114,16 @@ public class zzf {
         }
         this.zzdn = zzv;
         this.zzdo = this.zzdo == null ? zza.zzbh() : this.zzdo;
-        this.zzag = this.zzag == null ? zzal.zzn() : this.zzag;
+        this.zzag = this.zzag == null ? zzal.getInstance() : this.zzag;
         this.zzag.zzc(this.zzdj);
         this.zzdp = zzcf.zzg(this.zzdj);
         if (this.zzdk == null) {
             try {
                 this.zzdk = ClearcutLogger.anonymousLogger(this.zzdj, this.zzag.zzaf());
             } catch (SecurityException e) {
-                zzbn zzbn = this.zzai;
+                LogUtil zzbn = this.zzai;
                 String valueOf = String.valueOf(e.getMessage());
-                zzbn.zzo(valueOf.length() != 0 ? "Caught SecurityException while init ClearcutLogger: ".concat(valueOf) : new String("Caught SecurityException while init ClearcutLogger: "));
+                zzbn.w(valueOf.length() != 0 ? "Caught SecurityException while init ClearcutLogger: ".concat(valueOf) : new String("Caught SecurityException while init ClearcutLogger: "));
                 this.zzdk = null;
             }
         }
@@ -136,7 +136,7 @@ public class zzf {
             return;
         }
         if (!zzdi2.zzfg().hasAppInstanceId()) {
-            this.zzai.zzo("App Instance ID is null or empty, dropping the log");
+            this.zzai.w("App Instance ID is null or empty, dropping the log");
             return;
         }
         Context context = this.zzdj;
@@ -170,11 +170,11 @@ public class zzf {
                 }
             }
         } else {
-            zzbn.zzcn().zzm("No validators found for PerfMetric.");
+            LogUtil.getInstance().d("No validators found for PerfMetric.");
             z = false;
         }
         if (!z) {
-            this.zzai.zzo("Unable to process the PerfMetric due to missing or invalid values. See earlier log statements for additional information on the specific missing/invalid values.");
+            this.zzai.w("Unable to process the PerfMetric due to missing or invalid values. See earlier log statements for additional information on the specific missing/invalid values.");
         } else if (!this.zzdn.zzb(zzdi2)) {
             if (zzdi2.zzfj()) {
                 this.zzdo.zzb(zzbr.NETWORK_TRACE_EVENT_RATE_LIMITED.toString(), 1);
@@ -185,13 +185,13 @@ public class zzf {
                 return;
             }
             if (zzdi2.zzfj()) {
-                zzbn zzbn = this.zzai;
+                LogUtil zzbn = this.zzai;
                 String valueOf = String.valueOf(zzdi2.zzfk().getUrl());
-                zzbn.zzn(valueOf.length() != 0 ? "Rate Limited NetworkRequestMetric - ".concat(valueOf) : new String("Rate Limited NetworkRequestMetric - "));
+                zzbn.i(valueOf.length() != 0 ? "Rate Limited NetworkRequestMetric - ".concat(valueOf) : new String("Rate Limited NetworkRequestMetric - "));
             } else if (zzdi2.zzfh()) {
-                zzbn zzbn2 = this.zzai;
+                LogUtil zzbn2 = this.zzai;
                 String valueOf2 = String.valueOf(zzdi2.zzfi().getName());
-                zzbn2.zzn(valueOf2.length() != 0 ? "Rate Limited TraceMetric - ".concat(valueOf2) : new String("Rate Limited TraceMetric - "));
+                zzbn2.i(valueOf2.length() != 0 ? "Rate Limited TraceMetric - ".concat(valueOf2) : new String("Rate Limited TraceMetric - "));
             }
         } else {
             try {
@@ -203,11 +203,11 @@ public class zzf {
 
     /* access modifiers changed from: private */
     @WorkerThread
-    public final void zzb(zzcv zzcv, zzcl zzcl) {
+    public final void zzb(zzcv zzcv, ApplicationProcessState zzcl) {
         if (zzby()) {
             if (this.zzdp) {
                 int zzec = zzcv.zzec();
-                this.zzai.zzm(String.format(Locale.ENGLISH, "Logging %d gauge metrics. Has metadata: %b", new Object[]{Integer.valueOf(zzec), Boolean.valueOf(zzcv.zzea())}));
+                this.zzai.d(String.format(Locale.ENGLISH, "Logging %d gauge metrics. Has metadata: %b", new Object[]{Integer.valueOf(zzec), Boolean.valueOf(zzcv.zzea())}));
             }
             zzdi.zza zzfn = zzdi.zzfn();
             zzbw();
@@ -218,12 +218,12 @@ public class zzf {
 
     /* access modifiers changed from: private */
     @WorkerThread
-    public final void zzb(@NonNull zzdr zzdr, zzcl zzcl) {
+    public final void zzb(@NonNull zzdr zzdr, ApplicationProcessState zzcl) {
         Map<String, String> emptyMap;
         if (zzby()) {
             if (this.zzdp) {
                 long durationUs = zzdr.getDurationUs();
-                this.zzai.zzm(String.format(Locale.ENGLISH, "Logging trace metric - %s %.4fms", new Object[]{zzdr.getName(), Double.valueOf(((double) durationUs) / 1000.0d)}));
+                this.zzai.d(String.format(Locale.ENGLISH, "Logging trace metric - %s %.4fms", new Object[]{zzdr.getName(), Double.valueOf(((double) durationUs) / 1000.0d)}));
             }
             zzbw();
             zzdi.zza zzfn = zzdi.zzfn();
@@ -240,7 +240,7 @@ public class zzf {
 
     /* access modifiers changed from: private */
     @WorkerThread
-    public final void zzb(@NonNull zzdc zzdc, zzcl zzcl) {
+    public final void zzb(@NonNull zzdc zzdc, ApplicationProcessState zzcl) {
         long j;
         String str;
         if (zzby()) {
@@ -255,7 +255,7 @@ public class zzf {
                 } else {
                     str = "UNKNOWN";
                 }
-                this.zzai.zzm(String.format(Locale.ENGLISH, "Logging network request trace - %s, Response code: %s, %.4fms", new Object[]{zzdc.getUrl(), str, Double.valueOf(((double) j) / 1000.0d)}));
+                this.zzai.d(String.format(Locale.ENGLISH, "Logging network request trace - %s, Response code: %s, %.4fms", new Object[]{zzdc.getUrl(), str, Double.valueOf(((double) j) / 1000.0d)}));
             }
             zzbw();
             zza((zzdi) ((zzfn) zzdi.zzfn().zza(this.zzdm.zzf(zzcl)).zzd(zzdc).zzhn()));
@@ -287,19 +287,19 @@ public class zzf {
             try {
                 str = (String) Tasks.await(this.zzdi.getId(), 60000, TimeUnit.MILLISECONDS);
             } catch (ExecutionException e) {
-                this.zzai.zzp(String.format("Unable to retrieve Installation Id: %s", new Object[]{e.getMessage()}));
+                this.zzai.e(String.format("Unable to retrieve Installation Id: %s", new Object[]{e.getMessage()}));
                 str = null;
             } catch (InterruptedException e2) {
-                this.zzai.zzp(String.format("Task to retrieve Installation Id is interrupted: %s", new Object[]{e2.getMessage()}));
+                this.zzai.e(String.format("Task to retrieve Installation Id is interrupted: %s", new Object[]{e2.getMessage()}));
                 str = null;
             } catch (TimeoutException e3) {
-                this.zzai.zzp(String.format("Task to retrieve Installation Id is timed out: %s", new Object[]{e3.getMessage()}));
+                this.zzai.e(String.format("Task to retrieve Installation Id is timed out: %s", new Object[]{e3.getMessage()}));
                 str = null;
             }
             if (!TextUtils.isEmpty(str)) {
                 this.zzdm.zzac(str);
             } else {
-                this.zzai.zzo("Firebase Installation Id is empty, contact Firebase Support for debugging.");
+                this.zzai.w("Firebase Installation Id is empty, contact Firebase Support for debugging.");
             }
         }
     }
@@ -315,7 +315,7 @@ public class zzf {
     private final boolean zzby() {
         zzbz();
         if (this.zzag == null) {
-            this.zzag = zzal.zzn();
+            this.zzag = zzal.getInstance();
         }
         return this.zzdh != null && this.zzdh.isPerformanceCollectionEnabled() && this.zzag.zzr();
     }

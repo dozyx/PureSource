@@ -9,8 +9,8 @@ import com.google.firebase.perf.internal.zzd;
 /* renamed from: com.google.android.gms.internal.firebase-perf.zzal  reason: invalid package */
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zzal {
-    private static volatile zzal zzag;
-    private zzbn zzai = zzbn.zzcn();
+    private static volatile zzal INSTANCE;
+    private LogUtil zzai = LogUtil.getInstance();
     private zzbt zzal = new zzbt();
     private RemoteConfigManager zzam = RemoteConfigManager.zzck();
     private zzbe zzan = zzbe.zzbc();
@@ -19,13 +19,13 @@ public final class zzal {
     private zzal(@Nullable RemoteConfigManager remoteConfigManager, @Nullable zzbt zzbt, @Nullable zzbe zzbe) {
     }
 
-    public static synchronized zzal zzn() {
+    public static synchronized zzal getInstance() {
         zzal zzal2;
         synchronized (zzal.class) {
-            if (zzag == null) {
-                zzag = new zzal(null, null, null);
+            if (INSTANCE == null) {
+                INSTANCE = new zzal(null, null, null);
             }
-            zzal2 = zzag;
+            zzal2 = INSTANCE;
         }
         return zzal2;
     }
@@ -35,7 +35,7 @@ public final class zzal {
     }
 
     public final void zzc(Context context) {
-        zzbn.zzcn().zzd(zzcf.zzg(context));
+        LogUtil.getInstance().zzd(zzcf.zzg(context));
         this.zzan.zzd(context);
     }
 
@@ -65,7 +65,7 @@ public final class zzal {
         if (zza.isPresent()) {
             return zza.get();
         }
-        this.zzai.zzm("CollectionEnabled metadata key unknown or value not found in manifest.");
+        this.zzai.d("CollectionEnabled metadata key unknown or value not found in manifest.");
         return null;
     }
 
@@ -95,7 +95,7 @@ public final class zzal {
     public final boolean zzr() {
         boolean booleanValue;
         boolean zza;
-        this.zzai.zzm("Retrieving master flag for Firebase Performance SDK enabled configuration value.");
+        this.zzai.d("Retrieving master flag for Firebase Performance SDK enabled configuration value.");
         zzav zzat = zzav.zzat();
         zzbs<Boolean> zzb = this.zzam.zzb(zzat.zzal());
         if (!zzb.isPresent()) {
@@ -113,7 +113,7 @@ public final class zzal {
             booleanValue = zzb.get().booleanValue();
         }
         if (booleanValue) {
-            this.zzai.zzm("Retrieving Firebase Performance SDK disabled versions configuration value.");
+            this.zzai.d("Retrieving Firebase Performance SDK disabled versions configuration value.");
             zzas zzaq = zzas.zzaq();
             zzbs<String> zzc = this.zzam.zzc(zzaq.zzal());
             if (zzc.isPresent()) {
@@ -147,7 +147,7 @@ public final class zzal {
     }
 
     public final float zzs() {
-        this.zzai.zzm("Retrieving trace sampling rate configuration value.");
+        this.zzai.d("Retrieving trace sampling rate configuration value.");
         zzbc zzba = zzbc.zzba();
         zzbs<Float> zzc = zzc((zzbf<Float>) zzba);
         if (!zzc.isPresent() || !zza(zzc.get().floatValue())) {
@@ -162,7 +162,7 @@ public final class zzal {
     }
 
     public final float zzt() {
-        this.zzai.zzm("Retrieving network request sampling rate configuration value.");
+        this.zzai.d("Retrieving network request sampling rate configuration value.");
         zzaq zzao = zzaq.zzao();
         zzbs<Float> zzc = zzc((zzbf<Float>) zzao);
         if (!zzc.isPresent() || !zza(zzc.get().floatValue())) {
@@ -177,7 +177,7 @@ public final class zzal {
     }
 
     public final float zzu() {
-        this.zzai.zzm("Retrieving session sampling rate configuration value.");
+        this.zzai.d("Retrieving session sampling rate configuration value.");
         zzbb zzaz = zzbb.zzaz();
         zzbs<Float> zzd = this.zzal.zzd(zzaz.zzah());
         if (zzd.isPresent()) {
@@ -199,7 +199,7 @@ public final class zzal {
     }
 
     public final long zzv() {
-        this.zzai.zzm("Retrieving Session CPU Capture Frequency on foreground (milliseonds) configuration value.");
+        this.zzai.d("Retrieving Session CPU Capture Frequency on foreground (milliseonds) configuration value.");
         zzax zzav = zzax.zzav();
         zzbs<Long> zzb = zzb((zzbf<Long>) zzav);
         if (zzb.isPresent() && zzd(zzb.get().longValue())) {
@@ -219,7 +219,7 @@ public final class zzal {
     }
 
     public final long zzw() {
-        this.zzai.zzm("Retrieving Session CPU Capture Frequency on background (milliseonds) configuration value.");
+        this.zzai.d("Retrieving Session CPU Capture Frequency on background (milliseonds) configuration value.");
         zzau zzas = zzau.zzas();
         zzbs<Long> zzb = zzb((zzbf<Long>) zzas);
         if (zzb.isPresent() && zzd(zzb.get().longValue())) {
@@ -239,7 +239,7 @@ public final class zzal {
     }
 
     public final long zzx() {
-        this.zzai.zzm("Retrieving Session Memory Capture Frequency on foreground (milliseonds) configuration value.");
+        this.zzai.d("Retrieving Session Memory Capture Frequency on foreground (milliseonds) configuration value.");
         zzay zzaw = zzay.zzaw();
         zzbs<Long> zzb = zzb((zzbf<Long>) zzaw);
         if (zzb.isPresent() && zzd(zzb.get().longValue())) {
@@ -259,7 +259,7 @@ public final class zzal {
     }
 
     public final long zzy() {
-        this.zzai.zzm("Retrieving Session Memory Capture Frequency on background (milliseonds) configuration value.");
+        this.zzai.d("Retrieving Session Memory Capture Frequency on background (milliseonds) configuration value.");
         zzaz zzax = zzaz.zzax();
         zzbs<Long> zzb = zzb((zzbf<Long>) zzax);
         if (zzb.isPresent() && zzd(zzb.get().longValue())) {
@@ -279,7 +279,7 @@ public final class zzal {
     }
 
     public final long zzz() {
-        this.zzai.zzm("Retrieving Max Duration (in minutes) of single Session configuration value.");
+        this.zzai.d("Retrieving Max Duration (in minutes) of single Session configuration value.");
         zzaw zzau = zzaw.zzau();
         zzbs<Long> zzb = zzb((zzbf<Long>) zzau);
         if (zzb.isPresent() && zze(zzb.get().longValue())) {
@@ -299,7 +299,7 @@ public final class zzal {
     }
 
     public final long zzaa() {
-        this.zzai.zzm("Retrieving trace event count foreground configuration value.");
+        this.zzai.d("Retrieving trace event count foreground configuration value.");
         zzbd zzbb = zzbd.zzbb();
         zzbs<Long> zzd = zzd((zzbf<Long>) zzbb);
         if (!zzd.isPresent() || !zzb(zzd.get().longValue())) {
@@ -315,7 +315,7 @@ public final class zzal {
     }
 
     public final long zzab() {
-        this.zzai.zzm("Retrieving trace event count background configuration value.");
+        this.zzai.d("Retrieving trace event count background configuration value.");
         zzba zzay = zzba.zzay();
         zzbs<Long> zzd = zzd((zzbf<Long>) zzay);
         if (!zzd.isPresent() || !zzb(zzd.get().longValue())) {
@@ -331,7 +331,7 @@ public final class zzal {
     }
 
     public final long zzac() {
-        this.zzai.zzm("Retrieving network event count foreground configuration value.");
+        this.zzai.d("Retrieving network event count foreground configuration value.");
         zzar zzap = zzar.zzap();
         zzbs<Long> zzd = zzd((zzbf<Long>) zzap);
         if (!zzd.isPresent() || !zzb(zzd.get().longValue())) {
@@ -347,7 +347,7 @@ public final class zzal {
     }
 
     public final long zzad() {
-        this.zzai.zzm("Retrieving network event count background configuration value.");
+        this.zzai.d("Retrieving network event count background configuration value.");
         zzao zzak = zzao.zzak();
         zzbs<Long> zzd = zzd((zzbf<Long>) zzak);
         if (!zzd.isPresent() || !zzb(zzd.get().longValue())) {
@@ -363,7 +363,7 @@ public final class zzal {
     }
 
     public final long zzae() {
-        this.zzai.zzm("Retrieving rate limiting time range (in seconds) configuration value.");
+        this.zzai.d("Retrieving rate limiting time range (in seconds) configuration value.");
         zzat zzar = zzat.zzar();
         zzbs<Long> zzd = zzd((zzbf<Long>) zzar);
         if (!zzd.isPresent() || !zzc(zzd.get().longValue())) {

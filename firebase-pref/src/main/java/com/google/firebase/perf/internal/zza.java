@@ -7,12 +7,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.FrameMetricsAggregator;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbp;
 import com.google.android.gms.internal.p000firebaseperf.zzbq;
 import com.google.android.gms.internal.p000firebaseperf.zzbr;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
-import com.google.android.gms.internal.p000firebaseperf.zzcl;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
+import com.google.android.gms.internal.p000firebaseperf.ApplicationProcessState;
 import com.google.android.gms.internal.p000firebaseperf.zzdr;
 import com.google.android.gms.internal.p000firebaseperf.zzfn;
 import com.google.firebase.perf.metrics.Trace;
@@ -29,17 +29,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class zza implements Application.ActivityLifecycleCallbacks {
     private static volatile zza zzca;
     private boolean mRegistered = false;
-    private zzbn zzai = zzbn.zzcn();
+    private LogUtil zzai = LogUtil.getInstance();
     private zzf zzcb = null;
     private zzal zzcc;
     private final zzbp zzcd;
     private boolean zzce = true;
     private final WeakHashMap<Activity, Boolean> zzcf = new WeakHashMap<>();
-    private zzcb zzcg;
-    private zzcb zzch;
+    private TimeTracker zzcg;
+    private TimeTracker zzch;
     private final Map<String, Long> zzci = new HashMap();
     private AtomicInteger zzcj = new AtomicInteger(0);
-    private zzcl zzck = zzcl.BACKGROUND;
+    private ApplicationProcessState zzck = zzcl.BACKGROUND;
     private Set<WeakReference<C0001zza>> zzcl = new HashSet();
     private boolean zzcm = false;
     private FrameMetricsAggregator zzcn;
@@ -48,7 +48,7 @@ public class zza implements Application.ActivityLifecycleCallbacks {
     /* renamed from: com.google.firebase.perf.internal.zza$zza  reason: collision with other inner class name */
     /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
     public interface C0001zza {
-        void zzb(zzcl zzcl);
+        void zzb(ApplicationProcessState zzcl);
     }
 
     public static zza zzbh() {
@@ -71,7 +71,7 @@ public class zza implements Application.ActivityLifecycleCallbacks {
 
     private zza(zzf zzf, zzbp zzbp) {
         this.zzcd = zzbp;
-        this.zzcc = zzal.zzn();
+        this.zzcc = zzal.getInstance();
         this.zzcm = zzbl();
         if (this.zzcm) {
             this.zzcn = new FrameMetricsAggregator();
@@ -250,7 +250,7 @@ public class zza implements Application.ActivityLifecycleCallbacks {
 
     public synchronized void onActivityResumed(Activity activity) {
         if (this.zzcf.isEmpty()) {
-            this.zzch = new zzcb();
+            this.zzch = new TimeTracker();
             this.zzcf.put(activity, true);
             zza(zzcl.FOREGROUND);
             zza(true);
@@ -268,7 +268,7 @@ public class zza implements Application.ActivityLifecycleCallbacks {
         return this.zzce;
     }
 
-    public final zzcl zzbj() {
+    public final ApplicationProcessState zzbj() {
         return this.zzck;
     }
 
@@ -284,7 +284,7 @@ public class zza implements Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private final void zza(zzcl zzcl2) {
+    private final void zza(ApplicationProcessState zzcl2) {
         this.zzck = zzcl2;
         synchronized (this.zzcl) {
             Iterator<WeakReference<C0001zza>> it = this.zzcl.iterator();
@@ -305,10 +305,10 @@ public class zza implements Application.ActivityLifecycleCallbacks {
     public void onActivityPaused(Activity activity) {
     }
 
-    private final void zza(String str, zzcb zzcb2, zzcb zzcb3) {
+    private final void zza(String str, TimeTracker zzcb2, TimeTracker zzcb3) {
         if (this.zzcc.zzo()) {
             zzbk();
-            zzdr.zza zzb = zzdr.zzfz().zzak(str).zzao(zzcb2.zzdd()).zzap(zzcb2.zzk(zzcb3)).zzb(SessionManager.zzco().zzcp().zzcj());
+            zzdr.zza zzb = zzdr.zzfz().zzak(str).zzao(zzcb2.getTimeStamp()).zzap(zzcb2.getDurationMicros(zzcb3)).zzb(SessionManager.getInstance().zzcp().zzcj());
             int andSet = this.zzcj.getAndSet(0);
             synchronized (this.zzci) {
                 zzb.zze(this.zzci);

@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.gms.internal.p000firebaseperf.zzal;
-import com.google.android.gms.internal.p000firebaseperf.zzbn;
+import com.google.android.gms.internal.p000firebaseperf.LogUtil;
 import com.google.android.gms.internal.p000firebaseperf.zzbp;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import com.google.android.gms.internal.p000firebaseperf.zzdj;
 import com.google.android.gms.internal.p000firebaseperf.zzdq;
 import com.google.android.gms.internal.p000firebaseperf.zzfn;
@@ -21,18 +21,18 @@ public class zzt implements Parcelable {
     public static final Parcelable.Creator<zzt> CREATOR = new zzs();
     private String zzeq;
     private boolean zzer;
-    private zzcb zzes;
+    private TimeTracker zzes;
 
     public static zzt zzcf() {
         String replaceAll = UUID.randomUUID().toString().replaceAll("\\-", "");
         zzt zzt = new zzt(replaceAll, new zzbp());
-        zzal zzn = zzal.zzn();
+        zzal zzn = zzal.getInstance();
         zzt.zzer = zzn.zzo() && Math.random() < ((double) zzn.zzu());
-        zzbn zzcn = zzbn.zzcn();
+        LogUtil zzcn = LogUtil.getInstance();
         Object[] objArr = new Object[2];
         objArr[0] = zzt.zzer ? "Verbose" : "Non Verbose";
         objArr[1] = replaceAll;
-        zzcn.zzm(String.format("Creating a new %s Session: %s", objArr));
+        zzcn.d(String.format("Creating a new %s Session: %s", objArr));
         return zzt;
     }
 
@@ -40,7 +40,7 @@ public class zzt implements Parcelable {
     private zzt(String str, zzbp zzbp) {
         this.zzer = false;
         this.zzeq = str;
-        this.zzes = new zzcb();
+        this.zzes = new TimeTracker();
     }
 
     private zzt(@NonNull Parcel parcel) {
@@ -48,14 +48,14 @@ public class zzt implements Parcelable {
         this.zzer = false;
         this.zzeq = parcel.readString();
         this.zzer = parcel.readByte() != 0 ? true : z;
-        this.zzes = (zzcb) parcel.readParcelable(zzcb.class.getClassLoader());
+        this.zzes = (TimeTracker) parcel.readParcelable(TimeTracker.class.getClassLoader());
     }
 
     public final String zzcg() {
         return this.zzeq;
     }
 
-    public final zzcb zzch() {
+    public final TimeTracker zzch() {
         return this.zzes;
     }
 
@@ -64,7 +64,7 @@ public class zzt implements Parcelable {
     }
 
     public final boolean isExpired() {
-        return TimeUnit.MICROSECONDS.toMinutes(this.zzes.getDurationMicros()) > zzal.zzn().zzz();
+        return TimeUnit.MICROSECONDS.toMinutes(this.zzes.getDurationMicros()) > zzal.getInstance().zzz();
     }
 
     public final zzdj zzcj() {

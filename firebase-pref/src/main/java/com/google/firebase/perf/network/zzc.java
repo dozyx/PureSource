@@ -1,7 +1,7 @@
 package com.google.firebase.perf.network;
 
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,7 +22,7 @@ public final class zzc extends HttpsURLConnection {
     private final zzf zzha;
     private final HttpsURLConnection zzhb;
 
-    zzc(HttpsURLConnection httpsURLConnection, zzcb zzcb, zzbm zzbm) {
+    zzc(HttpsURLConnection httpsURLConnection, TimeTracker zzcb, zzbm zzbm) {
         super(httpsURLConnection.getURL());
         this.zzhb = httpsURLConnection;
         this.zzha = new zzf(httpsURLConnection, zzcb, zzbm);

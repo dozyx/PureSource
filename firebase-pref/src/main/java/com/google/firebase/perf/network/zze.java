@@ -1,7 +1,7 @@
 package com.google.firebase.perf.network;
 
 import com.google.android.gms.internal.p000firebaseperf.zzbm;
-import com.google.android.gms.internal.p000firebaseperf.zzcb;
+import com.google.android.gms.internal.p000firebaseperf.TimeTracker;
 import java.io.IOException;
 import org.apache.http.HttpMessage;
 import org.apache.http.HttpResponse;
@@ -9,11 +9,11 @@ import org.apache.http.client.ResponseHandler;
 
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zze<T> implements ResponseHandler<T> {
-    private final zzcb zzgo;
+    private final TimeTracker zzgo;
     private final zzbm zzgv;
     private final ResponseHandler<? extends T> zzhc;
 
-    public zze(ResponseHandler<? extends T> responseHandler, zzcb zzcb, zzbm zzbm) {
+    public zze(ResponseHandler<? extends T> responseHandler, TimeTracker zzcb, zzbm zzbm) {
         this.zzhc = responseHandler;
         this.zzgo = zzcb;
         this.zzgv = zzbm;

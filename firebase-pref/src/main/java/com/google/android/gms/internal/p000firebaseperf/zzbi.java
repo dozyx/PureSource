@@ -17,7 +17,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 public final class zzbi {
     @SuppressLint({"StaticFieldLeak"})
     private static final zzbi zzbt = new zzbi();
-    private zzbn zzai;
+    private LogUtil zzai;
     private final ScheduledExecutorService zzbu;
     public final ConcurrentLinkedQueue<zzci> zzbv;
     private final Runtime zzbw;
@@ -36,14 +36,14 @@ public final class zzbi {
         this.zzbu = scheduledExecutorService;
         this.zzbv = new ConcurrentLinkedQueue<>();
         this.zzbw = runtime;
-        this.zzai = zzbn.zzcn();
+        this.zzai = LogUtil.getInstance();
     }
 
     public static zzbi zzbg() {
         return zzbt;
     }
 
-    public final void zza(long j, zzcb zzcb) {
+    public final void zza(long j, TimeTracker zzcb) {
         if (!zzi(j)) {
             if (this.zzbx == null) {
                 zzc(j, zzcb);
@@ -62,39 +62,39 @@ public final class zzbi {
         }
     }
 
-    public final void zza(zzcb zzcb) {
+    public final void zza(TimeTracker zzcb) {
         zzf(zzcb);
     }
 
-    private final synchronized void zzc(long j, zzcb zzcb) {
+    private final synchronized void zzc(long j, TimeTracker zzcb) {
         String str;
         this.zzby = j;
         try {
             this.zzbx = this.zzbu.scheduleAtFixedRate(new zzbl(this, zzcb), 0, j, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException e) {
-            zzbn zzbn = this.zzai;
+            LogUtil zzbn = this.zzai;
             String valueOf = String.valueOf(e.getMessage());
             if (valueOf.length() != 0) {
                 str = "Unable to start collecting Memory Metrics: ".concat(valueOf);
             } else {
                 str = new String("Unable to start collecting Memory Metrics: ");
             }
-            zzbn.zzo(str);
+            zzbn.w(str);
         }
     }
 
-    private final synchronized void zzf(zzcb zzcb) {
+    private final synchronized void zzf(TimeTracker zzcb) {
         try {
             this.zzbu.schedule(new zzbk(this, zzcb), 0, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException e) {
-            zzbn zzbn = this.zzai;
+            LogUtil zzbn = this.zzai;
             String valueOf = String.valueOf(e.getMessage());
-            zzbn.zzo(valueOf.length() != 0 ? "Unable to collect Memory Metric: ".concat(valueOf) : new String("Unable to collect Memory Metric: "));
+            zzbn.w(valueOf.length() != 0 ? "Unable to collect Memory Metric: ".concat(valueOf) : new String("Unable to collect Memory Metric: "));
         }
     }
 
     @Nullable
-    private final zzci zzg(zzcb zzcb) {
+    private final zzci zzg(TimeTracker zzcb) {
         if (zzcb == null) {
             return null;
         }
@@ -106,7 +106,7 @@ public final class zzbi {
     }
 
     /* access modifiers changed from: package-private */
-    public final /* synthetic */ void zzh(zzcb zzcb) {
+    public final /* synthetic */ void zzh(TimeTracker zzcb) {
         zzci zzg = zzg(zzcb);
         if (zzg != null) {
             this.zzbv.add(zzg);
@@ -114,7 +114,7 @@ public final class zzbi {
     }
 
     /* access modifiers changed from: package-private */
-    public final /* synthetic */ void zzi(zzcb zzcb) {
+    public final /* synthetic */ void zzi(TimeTracker zzcb) {
         zzci zzg = zzg(zzcb);
         if (zzg != null) {
             this.zzbv.add(zzg);

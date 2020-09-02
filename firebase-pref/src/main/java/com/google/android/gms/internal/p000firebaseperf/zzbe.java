@@ -11,7 +11,7 @@ import com.google.firebase.FirebaseApp;
 /* compiled from: com.google.firebase:firebase-perf@@19.0.8 */
 public final class zzbe {
     private static zzbe zzbh;
-    private zzbn zzai = zzbn.zzcn();
+    private LogUtil zzai = LogUtil.getInstance();
     private SharedPreferences zzbi;
 
     private zzbe() {
@@ -36,7 +36,7 @@ public final class zzbe {
 
     public final zzbs<Boolean> zzb(String str) {
         if (str == null) {
-            this.zzai.zzm("Key is null when getting boolean value on device cache.");
+            this.zzai.d("Key is null when getting boolean value on device cache.");
             return zzbs.zzdc();
         }
         if (this.zzbi == null) {
@@ -51,14 +51,14 @@ public final class zzbe {
         try {
             return zzbs.zzb(Boolean.valueOf(this.zzbi.getBoolean(str, false)));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Key %s from sharedPreferences has type other than long: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Key %s from sharedPreferences has type other than long: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }
 
     public final void clear(String str) {
         if (str == null) {
-            this.zzai.zzm("Key is null. Cannot clear nullable key");
+            this.zzai.d("Key is null. Cannot clear nullable key");
         } else {
             this.zzbi.edit().remove(str).apply();
         }
@@ -66,7 +66,7 @@ public final class zzbe {
 
     public final boolean zza(String str, boolean z) {
         if (str == null) {
-            this.zzai.zzm("Key is null when setting boolean value on device cache.");
+            this.zzai.d("Key is null when setting boolean value on device cache.");
             return false;
         }
         if (this.zzbi == null) {
@@ -81,7 +81,7 @@ public final class zzbe {
 
     public final zzbs<String> zzc(String str) {
         if (str == null) {
-            this.zzai.zzm("Key is null when getting String value on device cache.");
+            this.zzai.d("Key is null when getting String value on device cache.");
             return zzbs.zzdc();
         }
         if (this.zzbi == null) {
@@ -96,14 +96,14 @@ public final class zzbe {
         try {
             return zzbs.zzb(this.zzbi.getString(str, ""));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Key %s from sharedPreferences has type other than String: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Key %s from sharedPreferences has type other than String: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }
 
     public final boolean zza(String str, String str2) {
         if (str == null) {
-            this.zzai.zzm("Key is null when setting String value on device cache.");
+            this.zzai.d("Key is null when setting String value on device cache.");
             return false;
         }
         if (this.zzbi == null) {
@@ -122,7 +122,7 @@ public final class zzbe {
 
     public final zzbs<Float> zzd(String str) {
         if (str == null) {
-            this.zzai.zzm("Key is null when getting float value on device cache.");
+            this.zzai.d("Key is null when getting float value on device cache.");
             return zzbs.zzdc();
         }
         if (this.zzbi == null) {
@@ -137,14 +137,14 @@ public final class zzbe {
         try {
             return zzbs.zzb(Float.valueOf(this.zzbi.getFloat(str, 0.0f)));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Key %s from sharedPreferences has type other than float: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Key %s from sharedPreferences has type other than float: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }
 
     public final boolean zza(String str, float f) {
         if (str == null) {
-            this.zzai.zzm("Key is null when setting float value on device cache.");
+            this.zzai.d("Key is null when setting float value on device cache.");
             return false;
         }
         if (this.zzbi == null) {
@@ -159,7 +159,7 @@ public final class zzbe {
 
     public final zzbs<Long> zze(String str) {
         if (str == null) {
-            this.zzai.zzm("Key is null when getting long value on device cache.");
+            this.zzai.d("Key is null when getting long value on device cache.");
             return zzbs.zzdc();
         }
         if (this.zzbi == null) {
@@ -174,14 +174,14 @@ public final class zzbe {
         try {
             return zzbs.zzb(Long.valueOf(this.zzbi.getLong(str, 0)));
         } catch (ClassCastException e) {
-            this.zzai.zzm(String.format("Key %s from sharedPreferences has type other than long: %s", new Object[]{str, e.getMessage()}));
+            this.zzai.d(String.format("Key %s from sharedPreferences has type other than long: %s", new Object[]{str, e.getMessage()}));
             return zzbs.zzdc();
         }
     }
 
     public final boolean zza(String str, long j) {
         if (str == null) {
-            this.zzai.zzm("Key is null when setting long value on device cache.");
+            this.zzai.d("Key is null when setting long value on device cache.");
             return false;
         }
         if (this.zzbi == null) {
