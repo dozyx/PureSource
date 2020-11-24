@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ExoPlayer.iml" filepath="$PROJECT_DIR$/.idea/ExoPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/demos/main/ExoPlayer.demo.iml" filepath="$PROJECT_DIR$/.idea/modules/demos/main/ExoPlayer.demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/demos/cast/ExoPlayer.demo-cast.iml" filepath="$PROJECT_DIR$/.idea/modules/demos/cast/ExoPlayer.demo-cast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/demos/gl/ExoPlayer.demo-gl.iml" filepath="$PROJECT_DIR$/.idea/modules/demos/gl/ExoPlayer.demo-gl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/demos/surface/ExoPlayer.demo-surface.iml" filepath="$PROJECT_DIR$/.idea/modules/demos/surface/ExoPlayer.demo-surface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/av1/ExoPlayer.extension-av1.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/av1/ExoPlayer.extension-av1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/cast/ExoPlayer.extension-cast.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/cast/ExoPlayer.extension-cast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/cronet/ExoPlayer.extension-cronet.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/cronet/ExoPlayer.extension-cronet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/ffmpeg/ExoPlayer.extension-ffmpeg.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/ffmpeg/ExoPlayer.extension-ffmpeg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/flac/ExoPlayer.extension-flac.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/flac/ExoPlayer.extension-flac.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/gvr/ExoPlayer.extension-gvr.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/gvr/ExoPlayer.extension-gvr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/ima/ExoPlayer.extension-ima.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/ima/ExoPlayer.extension-ima.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/jobdispatcher/ExoPlayer.extension-jobdispatcher.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/jobdispatcher/ExoPlayer.extension-jobdispatcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/leanback/ExoPlayer.extension-leanback.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/leanback/ExoPlayer.extension-leanback.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/mediasession/ExoPlayer.extension-mediasession.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/mediasession/ExoPlayer.extension-mediasession.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/okhttp/ExoPlayer.extension-okhttp.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/okhttp/ExoPlayer.extension-okhttp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/opus/ExoPlayer.extension-opus.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/opus/ExoPlayer.extension-opus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/rtmp/ExoPlayer.extension-rtmp.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/rtmp/ExoPlayer.extension-rtmp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/vp9/ExoPlayer.extension-vp9.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/vp9/ExoPlayer.extension-vp9.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/workmanager/ExoPlayer.extension-workmanager.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/workmanager/ExoPlayer.extension-workmanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/all/ExoPlayer.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/all/ExoPlayer.library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/core/ExoPlayer.library-core.iml" filepath="$PROJECT_DIR$/.idea/modules/library/core/ExoPlayer.library-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/dash/ExoPlayer.library-dash.iml" filepath="$PROJECT_DIR$/.idea/modules/library/dash/ExoPlayer.library-dash.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/hls/ExoPlayer.library-hls.iml" filepath="$PROJECT_DIR$/.idea/modules/library/hls/ExoPlayer.library-hls.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/smoothstreaming/ExoPlayer.library-smoothstreaming.iml" filepath="$PROJECT_DIR$/.idea/modules/library/smoothstreaming/ExoPlayer.library-smoothstreaming.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/ui/ExoPlayer.library-ui.iml" filepath="$PROJECT_DIR$/.idea/modules/library/ui/ExoPlayer.library-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/playbacktests/ExoPlayer.playbacktests.iml" filepath="$PROJECT_DIR$/.idea/modules/playbacktests/ExoPlayer.playbacktests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testutils/ExoPlayer.testutils.iml" filepath="$PROJECT_DIR$/.idea/modules/testutils/ExoPlayer.testutils.iml" />
+    </modules>
+  </component>
+</project>
