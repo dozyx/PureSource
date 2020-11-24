@@ -1,3 +1,4 @@
+include ':firebase-perf-plugin'
 include ':firebase-pref'
 include ':app', ':recyclerview', ':paging-common', ':paging-runtime', ':rxjava',
         ':okhttp', ':retrofit', ':leakcanary', ':material', ':adapter-rxjava2',
