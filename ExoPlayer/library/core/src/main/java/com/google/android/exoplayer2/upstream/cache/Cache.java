@@ -24,6 +24,7 @@ import java.util.NavigableSet;
 import java.util.Set;
 
 /**
+ * 内置实现为 {@link SimpleCache}
  * An interface for cache.
  */
 public interface Cache {

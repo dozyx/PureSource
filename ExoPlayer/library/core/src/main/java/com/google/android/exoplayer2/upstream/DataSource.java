@@ -47,6 +47,8 @@ public interface DataSource {
   void addTransferListener(TransferListener transferListener);
 
   /**
+   * 打开 source 读取特定数据
+   *
    * Opens the source to read the specified data.
    * <p>
    * Note: If an {@link IOException} is thrown, callers must still call {@link #close()} to ensure
@@ -64,6 +66,8 @@ public interface DataSource {
   long open(DataSpec dataSpec) throws IOException;
 
   /**
+   * 读取至多 {@code readLength} 的字节并存储到 buffer 中，起始位置为 offset
+   * 
    * Reads up to {@code readLength} bytes of data and stores them into {@code buffer}, starting at
    * index {@code offset}.
    *
